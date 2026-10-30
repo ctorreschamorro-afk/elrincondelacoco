@@ -1,0 +1,9 @@
+tunnel: 4bcf641c-0cb4-4159-b0f5-4a056457836e
+credentials-file: C:\Users\yoyo\.cloudflared\4bcf641c-0cb4-4159-b0f5-4a056457836e.json
+
+ingress:
+  - hostname: elrincondelacoco.cl
+    service: http://localhost:80
+  - hostname: www.elrincondelacoco.cl
+    service: http://localhost:80
+  - service: http_status:404

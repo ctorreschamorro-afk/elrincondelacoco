@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DONDE LA COCO - Supermercado Online & Punto Chilexpress</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @media print {
+      body * { visibility: hidden; }
+      #seccion-boleta-imprimir, #seccion-boleta-imprimir * { visibility: visible; }
+      #seccion-boleta-imprimir { position: absolute; left: 0; top: 0; width: 100%; }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+  <!-- BANNER PERMANENTE CHILEXPRESS FULL SERVICE (INDEPENDIENTE) -->
+  <header class="w-full z-50 relative">
+    <div id="banner-chilexpress-fijo" class="bg-amber-400 text-slate-900 border-b border-amber-500 py-2 px-4 font-bold text-xs sm:text-sm shadow-sm block">
+      <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="bg-blue-900 text-white font-black text-[10px] sm:text-xs px-2 py-0.5 rounded tracking-wider flex items-center gap-1 shadow-xs">
+            <i class="fa-solid fa-box-open"></i> CHILEXPRESS
+          </span>
+          <span class="truncate">
+            📦 ¡Somos <strong class="text-blue-950 underline decoration-2">Punto Full Service Chilexpress</strong> en Curicó! Envío y recepción de paquetes y documentos.
+          </span>
+        </div>
+        <span class="hidden md:inline-block text-[11px] bg-blue-900/10 text-blue-950 px-2 py-0.5 rounded-full font-extrabold">
+          ⚡ Envíos a todo Chile
+        </span>
+      </div>
+    </div>
+
+    <!-- Top Bar Secundario -->
+    <div class="bg-emerald-900 text-white text-xs py-1 px-4 text-center font-medium">
+      🥥 DONDE LA COCO | Despacho GRATIS en Curicó por compras sobre $25.000 | Opción de Retiro en Tienda
+    </div>
+
+    <!-- Navbar Principal -->
+    <div class="bg-white shadow-sm sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+        <div onclick="mostrarVista('tienda')" class="flex items-center gap-2 cursor-pointer">
+          <div class="bg-emerald-500 text-white p-2 rounded-xl text-xl font-black"><i class="fa-solid fa-store"></i></div>
+          <div>
+            <span class="text-2xl font-black text-gray-900 tracking-tight">DONDE LA <span class="text-emerald-500">COCO</span></span>
+            <p class="text-[10px] text-gray-400 font-semibold -mt-1">SUPERMERCADO ONLINE</p>
+          </div>
+        </div>
+
+        <div id="wrapper-buscador" class="flex-1 max-w-2xl relative hidden md:block">
+          <input type="text" id="input-busqueda" onkeyup="buscarProducto()" placeholder="Busca frutas, verduras, abarrotes, golosinas, marca, código..." class="w-full bg-gray-100 border-0 focus:ring-2 focus:ring-emerald-500 rounded-full py-2.5 pl-11 pr-4 text-sm font-medium outline-none transition">
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-gray-400 text-sm"></i>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <!-- Sesión Cliente -->
+          <div id="box-user-session" class="hidden text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-200 flex items-center gap-2">
+            <i class="fa-solid fa-user-check"></i> <span id="text-user-name">Hola</span>
+            <button onclick="mostrarVista('portal-cliente')" class="text-emerald-600 ml-1 hover:underline"><i class="fa-solid fa-box-open"></i> Mi Portal</button>
+            <button onclick="cerrarSesionCliente()" class="text-red-500 ml-1 hover:underline"><i class="fa-solid fa-power-off"></i></button>
+          </div>
+          <button id="btn-login-cliente" onclick="toggleAuthModal()" class="text-xs font-bold text-gray-700 bg-gray-100 hover:bg-emerald-50 hover:text-emerald-600 px-3.5 py-2 rounded-xl transition border border-gray-200">
+            <i class="fa-solid fa-user"></i> Mi Cuenta
+          </button>
+
+          <!-- Admin Access -->
+          <button id="btn-toggle-view" onclick="intentarAccesoAdmin()" class="text-xs font-bold text-gray-700 bg-gray-100 hover:bg-emerald-50 hover:text-emerald-600 px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 border border-gray-200">
+            <i class="fa-solid fa-lock text-emerald-500" id="icon-admin-lock"></i> <span id="text-toggle-view">Panel Admin</span>
+          </button>
+
+          <!-- Carrito -->
+          <button id="btn-carrito-nav" onclick="toggleCarrito()" class="relative bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 shadow-sm transition">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span id="badge-carrito" class="bg-white text-emerald-600 text-xs px-2 py-0.5 rounded-full font-extrabold">0</span>
+            <span id="total-navbar" class="hidden sm:inline">$0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Categorías Dinámicas y Filtros Especiales -->
+      <div id="barra-categorias" class="border-t border-gray-100 bg-white">
+        <div id="contenedor-categorias-nav" class="max-w-7xl mx-auto px-4 flex items-center gap-2 overflow-x-auto py-2 scrollbar-none text-xs font-semibold text-gray-600">
+          <!-- Cargadas dinámicamente -->
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- VISTA TIENDA -->
+  <div id="vista-tienda">
+    <section class="max-w-7xl mx-auto px-4 mt-4">
+      <div class="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl p-6 sm:p-10 text-white shadow-lg flex flex-col sm:flex-row justify-between items-center gap-6">
+        <div class="space-y-2 text-center sm:text-left">
+          <span class="bg-emerald-800/60 text-emerald-200 text-xs font-bold px-3 py-1 rounded-full border border-emerald-400/30">DONDE LA COCO - PRODUCTOS FRESCOS</span>
+          <h1 class="text-2xl sm:text-4xl font-black">La mejor calidad directo a tu hogar en Curicó</h1>
+          <p class="text-emerald-100 text-sm max-w-md">Seleccionamos el producto exacto con control de código de barras e impuestos al día.</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20 text-center min-w-[200px]">
+          <p class="text-xs uppercase tracking-wider font-semibold text-emerald-200">Próxima entrega</p>
+          <p class="text-xl font-bold mt-1"><i class="fa-regular fa-clock"></i> Hoy en la tarde</p>
+        </div>
+      </div>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+      <div class="flex justify-between items-center mb-6">
+        <h2 id="titulo-seccion" class="text-xl font-bold text-gray-900 flex items-center gap-2">
+          <i class="fa-solid fa-basket-shopping text-emerald-500"></i> Productos Destacados
+        </h2>
+        <span id="contador-productos" class="text-xs font-semibold text-gray-400">Cargando productos...</span>
+      </div>
+      <div id="grid-productos" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+    </main>
+  </div>
+
+  <!-- VISTA PORTAL PRIVADO CLIENTE -->
+  <div id="vista-portal-cliente" class="hidden max-w-7xl mx-auto px-4 py-8">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+      <div>
+        <h1 class="text-2xl font-black text-gray-900">Mi Portal Privado <span class="text-emerald-600">COCO</span></h1>
+        <p class="text-xs text-gray-500 font-medium">Revisa el historial y estado de tus compras en Curicó y actualiza tu información de contacto</p>
+      </div>
+      <button onclick="mostrarVista('tienda')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5">
+        <i class="fa-solid fa-arrow-left"></i> Volver a la Tienda
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-fit">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2"><i class="fa-solid fa-id-card text-emerald-500"></i> Mis Datos Personales</h2>
+        <form onsubmit="guardarPerfilClientePropio(event)" class="space-y-3">
+          <div><label class="block text-xs font-bold text-gray-700 mb-1">Nombre Completo</label><input type="text" id="portal-nombre" required class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+          <div><label class="block text-xs font-bold text-gray-700 mb-1">Correo Electrónico</label><input type="email" id="portal-email" required class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+          <div><label class="block text-xs font-bold text-gray-700 mb-1">Nueva Contraseña (Opcional)</label><input type="password" id="portal-password" placeholder="••••••••" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+          <div><label class="block text-xs font-bold text-gray-700 mb-1">Teléfono</label><input type="text" id="portal-telefono" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+          <div><label class="block text-xs font-bold text-gray-700 mb-1">Dirección Predeterminada en Curicó</label><input type="text" id="portal-direccion" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+          <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl shadow-md transition">Guardar mis Cambios</button>
+        </form>
+      </div>
+
+      <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2"><i class="fa-solid fa-boxes-packing text-emerald-500"></i> Historial y Seguimiento de Mis Compras</h2>
+        <div id="lista-mis-pedidos" class="space-y-4"><p class="text-center text-gray-400 py-8 text-sm">Cargando tus pedidos...</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISTA PANEL ADMIN ERP -->
+  <div id="vista-admin" class="hidden max-w-7xl mx-auto px-4 py-8">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+      <div>
+        <h1 class="text-2xl font-black text-gray-900">DONDE LA COCO - Panel ERP Fiscal</h1>
+        <p class="text-xs text-gray-500 font-medium">Categorías Dinámicas, Cálculo de IVA Crédito/Débito y Control por Pistola</p>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="exportarProductosCSV()" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5 border border-emerald-200">
+          <i class="fa-solid fa-file-csv"></i> Exportar CSV
+        </button>
+        <button onclick="cerrarSesionAdmin()" class="bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
+          <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+        </button>
+      </div>
+    </div>
+
+    <!-- Pestañas Admin ERP -->
+    <div class="flex gap-2 border-b border-gray-200 mb-6 overflow-x-auto">
+      <button id="tab-inventario" onclick="cambiarSubTabAdmin('inventario')" class="pb-3 px-4 font-bold text-sm border-b-2 border-emerald-500 text-emerald-600 flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-boxes-stacked"></i> Inventario & Costos Fiscales
+      </button>
+      <button id="tab-pedidos" onclick="cambiarSubTabAdmin('pedidos')" class="pb-3 px-4 font-bold text-sm text-gray-400 hover:text-gray-600 flex items-center gap-2 whitespace-nowrap relative">
+        <i class="fa-solid fa-truck-ramp-box"></i> Control de Pedidos & Armado
+        <span id="badge-total-pedidos" class="bg-emerald-500 text-white text-[10px] px-2 py-0.5 rounded-full font-extrabold">0</span>
+      </button>
+      <button id="tab-clientes" onclick="cambiarSubTabAdmin('clientes')" class="pb-3 px-4 font-bold text-sm text-gray-400 hover:text-gray-600 flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-users"></i> Gestión de Clientes
+      </button>
+    </div>
+
+    <!-- SUBTAB 1: INVENTARIO FISCAL -->
+    <div id="subtab-inventario">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+        <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+          <div><p class="text-[10px] text-gray-400 font-bold uppercase">Valor Inv. Neto</p><h3 id="stat-valor-inv" class="text-lg font-black text-gray-900 mt-0.5">$0 CLP</h3></div>
+          <div class="bg-emerald-50 text-emerald-600 p-2.5 rounded-xl text-lg font-bold"><i class="fa-solid fa-warehouse"></i></div>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+          <div><p class="text-[10px] text-gray-400 font-bold uppercase">IVA Crédito Favor</p><h3 id="stat-iva-credito" class="text-lg font-black text-green-600 mt-0.5">$0 CLP</h3></div>
+          <div class="bg-green-50 text-green-600 p-2.5 rounded-xl text-lg font-bold"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+          <div><p class="text-[10px] text-gray-400 font-bold uppercase">Ventas Totales Brutas</p><h3 id="stat-ventas-totales" class="text-lg font-black text-emerald-600 mt-0.5">$0 CLP</h3></div>
+          <div class="bg-teal-50 text-teal-600 p-2.5 rounded-xl text-lg font-bold"><i class="fa-solid fa-cash-register"></i></div>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+          <div><p class="text-[10px] text-gray-400 font-bold uppercase">Ganancia Neta Real</p><h3 id="stat-ganancia-neta" class="text-lg font-black text-blue-600 mt-0.5">$0 CLP</h3></div>
+          <div class="bg-blue-50 text-blue-600 p-2.5 rounded-xl text-lg font-bold"><i class="fa-solid fa-chart-line"></i></div>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+          <div><p class="text-[10px] text-gray-400 font-bold uppercase">IVA Débito a Pagar</p><h3 id="stat-iva-debito" class="text-lg font-black text-orange-600 mt-0.5">$0 CLP</h3></div>
+          <div class="bg-orange-50 text-orange-600 p-2.5 rounded-xl text-lg font-bold"><i class="fa-solid fa-receipt"></i></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Formulario Ingreso con Categorías Dinámicas y Validación -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-fit">
+          <div class="flex justify-between items-center mb-4">
+            <h2 id="titulo-form-prod" class="text-lg font-bold text-gray-900 flex items-center gap-2"><i class="fa-solid fa-calculator text-emerald-500"></i> Ingreso de Stock & Fiscal</h2>
+            <button onclick="focarPistola('admin-sku')" class="bg-purple-50 text-purple-700 hover:bg-purple-100 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-purple-200">
+              <i class="fa-solid fa-barcode"></i> Usar Pistola
+            </button>
+          </div>
+
+          <form onsubmit="guardarNuevoProducto(event)" class="space-y-3">
+            <input type="hidden" id="admin-prod-id">
+            
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1">Código de Barras / SKU (Opcional, se genera si viene vacío)</label>
+              <input type="text" id="admin-sku" placeholder="Ej: 780200000102" class="w-full bg-emerald-50/50 border border-emerald-200 rounded-xl p-2.5 text-sm font-mono font-bold outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1">Nombre Específico <span class="text-red-500">*Obligatorio</span></label>
+              <input type="text" id="admin-nombre" required placeholder="Ej: Huevitos Fritos Fini 100g" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+            
+            <!-- SECCIÓN COSTO NETO -->
+            <div class="bg-blue-50/60 p-3 rounded-xl border border-blue-100 space-y-2">
+              <span class="text-[10px] font-bold uppercase text-blue-800 tracking-wider"><i class="fa-solid fa-cart-flatbed"></i> 1. Compra a Proveedor (Costo)</span>
+              <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Costo NETO ($)</label>
+                <input type="number" id="admin-costo-neto" oninput="calcularLógicaFiscal()" required placeholder="650" class="w-full bg-white border border-gray-200 rounded-xl p-2 text-sm font-bold text-blue-900 outline-none">
+              </div>
+              <div class="flex justify-between text-[11px] font-medium text-blue-700 pt-1 border-t border-blue-200/50">
+                <span>+ IVA Crédito (19% Favor): <strong id="lbl-iva-credito">$0</strong></span>
+                <span>= Costo Bruto: <strong id="lbl-costo-bruto">$0</strong></span>
+              </div>
+            </div>
+
+            <!-- SECCIÓN PRECIO VENTA BRUTO -->
+            <div class="bg-emerald-50/60 p-3 rounded-xl border border-emerald-100 space-y-2">
+              <span class="text-[10px] font-bold uppercase text-emerald-800 tracking-wider"><i class="fa-solid fa-tag"></i> 2. Precio de Venta Público</span>
+              <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Precio Venta BRUTO Cliente ($)</label>
+                <input type="number" id="admin-precio-bruto" oninput="calcularLógicaFiscal()" required placeholder="1000" class="w-full bg-white border border-gray-200 rounded-xl p-2 text-sm font-black text-emerald-700 outline-none">
+              </div>
+              <div class="flex justify-between text-[11px] font-medium text-emerald-700 pt-1 border-t border-emerald-200/50">
+                <span>Venta Neto: <strong id="lbl-venta-neto">$0</strong></span>
+                <span>- IVA Débito (19% Pagar): <strong id="lbl-iva-debito">$0</strong></span>
+              </div>
+            </div>
+
+            <!-- CAJA DE ALERTA DE PÉRDIDA Y MARGEN -->
+            <div id="box-alerta-fiscal" class="p-3 rounded-xl border text-xs font-bold transition flex justify-between items-center hidden">
+              <span id="text-alerta-fiscal-msg"></span>
+              <span id="text-alerta-fiscal-val" class="text-sm"></span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div><label class="block text-xs font-bold text-gray-700 mb-1">Stock Inicial</label><input type="number" id="admin-stock" required placeholder="24" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+              <div><label class="block text-xs font-bold text-gray-700 mb-1">Unidad</label><select id="admin-unidad" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"><option value="Unidad">Unidad</option><option value="Kilo">Kilo</option><option value="Malla">Malla</option><option value="Litro">Litro</option></select></div>
+            </div>
+            
+            <!-- CATEGORÍA DINÁMICA -->
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <label class="block text-xs font-bold text-gray-700">Categoría</label>
+                <button type="button" onclick="mostrarInputNuevaCategoria()" class="text-[10px] text-emerald-600 font-bold hover:underline">+ Crear Nueva</button>
+              </div>
+              
+              <select id="admin-categoria" onchange="evaluarSeleccionCategoria(this.value)" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></select>
+              
+              <div id="box-nueva-categoria" class="hidden mt-2 space-y-1">
+                <input type="text" id="admin-nueva-categoria-input" placeholder="Escribe la nueva categoría (Ej: Golosinas)" class="w-full bg-emerald-50 border border-emerald-300 rounded-xl p-2 text-xs font-bold outline-none">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1">Etiqueta Especial</label>
+              <select id="admin-etiqueta" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none">
+                <option value="">Ninguna</option>
+                <option value="Orgánico">🌱 Orgánico</option>
+                <option value="Vegano">🥬 Vegano</option>
+                <option value="Sin Gluten">🌾 Sin Gluten</option>
+                <option value="Sin Azúcar">🍬 Sin Azúcar</option>
+              </select>
+            </div>
+            
+            <div><label class="block text-xs font-bold text-gray-700 mb-1">Emoji / Ícono</label><input type="text" id="admin-img" placeholder="🍬" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2 text-sm text-center text-xl outline-none"></div>
+            <div><label class="block text-xs font-bold text-gray-700 mb-1">O Carga Foto Real</label><input type="file" id="admin-file-imagen" accept="image/*" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2 text-xs text-gray-500 cursor-pointer"></div>
+            
+            <div class="flex gap-2">
+              <button type="submit" id="btn-guardar-prod" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl shadow-md transition">Guardar en PostgreSQL</button>
+              <button type="button" id="btn-cancelar-edit-prod" onclick="limpiarFormProducto()" class="hidden bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-4 py-3 rounded-xl transition">X</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Tabla Inventario Fiscal con SKU -->
+        <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+          <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2"><i class="fa-solid fa-list-check text-emerald-500"></i> Inventario & Desglose de IVA</h2>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-gray-100 text-[10px] uppercase tracking-wider text-gray-400">
+                  <th class="py-3 px-2">SKU</th>
+                  <th class="py-3 px-2">Producto</th>
+                  <th class="py-3 px-2">Categoría</th>
+                  <th class="py-3 px-2">Costo Neto</th>
+                  <th class="py-3 px-2">Venta Bruto</th>
+                  <th class="py-3 px-2">Ganancia Real</th>
+                  <th class="py-3 px-2 text-right">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-admin-productos" class="divide-y divide-gray-50 text-xs"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBTAB 2: CONTROL DE PEDIDOS CON ARMADO PISTOLA -->
+    <div id="subtab-pedidos" class="hidden">
+      <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
+          <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2"><i class="fa-solid fa-truck-fast text-emerald-500"></i> Pedidos Entrantes & Armado con Pistola Lectora</h2>
+          <button onclick="exportarPedidosCSV()" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold px-3 py-1.5 rounded-xl text-xs border border-emerald-200">
+            <i class="fa-solid fa-file-excel"></i> Exportar Ventas CSV
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-gray-100 text-[10px] uppercase tracking-wider text-gray-400">
+                <th class="py-3 px-2">Código</th>
+                <th class="py-3 px-2">Tipo</th>
+                <th class="py-3 px-2">Modo Entrega</th>
+                <th class="py-3 px-2">Cliente</th>
+                <th class="py-3 px-2">Dirección / Retiro</th>
+                <th class="py-3 px-2">Total</th>
+                <th class="py-3 px-2">Estado</th>
+                <th class="py-3 px-2 text-center">Acciones</th>
+                <th class="py-3 px-2 text-right">Estado Pedido</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-admin-pedidos" class="divide-y divide-gray-50 text-xs"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBTAB 3: GESTIÓN DE CLIENTES -->
+    <div id="subtab-clientes" class="hidden">
+      <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2"><i class="fa-solid fa-users-gear text-emerald-500"></i> Cuentas de Clientes Registrados</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-gray-100 text-[10px] uppercase tracking-wider text-gray-400">
+                <th class="py-3 px-2">ID</th><th class="py-3 px-2">Nombre</th><th class="py-3 px-2">Email</th><th class="py-3 px-2">Teléfono</th><th class="py-3 px-2">Dirección Curicó</th><th class="py-3 px-2">Registro</th><th class="py-3 px-2 text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-admin-clientes" class="divide-y divide-gray-50 text-xs"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WIDGET FLOTANTE WHATSAPP + IA BOT -->
+  <div class="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3">
+    <div id="box-bot-chat" class="hidden w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden mb-2 transition">
+      <div class="bg-emerald-600 text-white p-3.5 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <div class="bg-white text-emerald-600 p-1.5 rounded-lg text-xs font-bold"><i class="fa-solid fa-robot"></i></div>
+          <div>
+            <h4 class="font-bold text-xs">Asistente Virtual COCO IA</h4>
+            <p class="text-[10px] text-emerald-100">En línea | Curicó</p>
+          </div>
+        </div>
+        <button onclick="toggleBotChat()" class="text-white hover:text-emerald-200 text-sm"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div id="bot-messages" class="p-3 h-64 overflow-y-auto space-y-2 text-xs bg-gray-50">
+        <div class="bg-white p-2.5 rounded-xl border border-gray-100 shadow-sm max-w-[85%] text-gray-700">
+          ¡Hola! 🥥 Soy el asistente de DONDE LA COCO. ¿En qué puedo ayudarte hoy?
+        </div>
+      </div>
+
+      <div class="p-2 bg-white border-t border-gray-100 flex flex-wrap gap-1 text-[10px]">
+        <button onclick="responderBot('horarios')" class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg font-bold hover:bg-emerald-100">🕒 Horarios</button>
+        <button onclick="responderBot('despacho')" class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg font-bold hover:bg-emerald-100">🚚 Envíos Curicó</button>
+        <button onclick="responderBot('chilexpress')" class="bg-amber-50 text-amber-900 px-2 py-1 rounded-lg font-bold hover:bg-amber-100">📦 Chilexpress</button>
+        <button onclick="responderBot('humano')" class="bg-green-50 text-green-700 px-2 py-1 rounded-lg font-bold hover:bg-green-100"><i class="fa-brands fa-whatsapp"></i> Hablar con Humano</button>
+      </div>
+    </div>
+
+    <div class="flex gap-2">
+      <button onclick="toggleBotChat()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold p-3.5 rounded-full shadow-lg flex items-center gap-2 text-xs transition transform hover:scale-105">
+        <i class="fa-solid fa-robot text-lg"></i> <span class="hidden sm:inline">Asistente IA</span>
+      </button>
+
+      <a href="https://wa.me/56934513071?text=Hola%20DONDE%20LA%20COCO,%20necesito%20ayuda%20con%20un%20pedido." target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold p-3.5 rounded-full shadow-lg flex items-center gap-2 text-xs transition transform hover:scale-105">
+        <i class="fa-brands fa-whatsapp text-xl"></i> <span class="hidden sm:inline">WhatsApp Directo</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- MODAL VERIFICACIÓN / ARMADO CON PISTOLA LECTORA -->
+  <div id="modal-armado-pistola" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 relative">
+      <button onclick="toggleArmadoPistolaModal()" class="absolute right-4 top-4 text-gray-400 hover:text-gray-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div class="text-center mb-4">
+        <div class="bg-purple-100 text-purple-700 w-12 h-12 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold mb-2"><i class="fa-solid fa-barcode"></i></div>
+        <h3 class="font-bold text-gray-900 text-lg">Armado de Pedido con Pistola Lectora</h3>
+        <p id="armado-codigo-pedido" class="text-xs font-mono text-emerald-600 font-bold">DLC-000000</p>
+      </div>
+
+      <div class="bg-purple-50 p-3 rounded-xl border border-purple-200 mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-barcode text-purple-600 text-lg"></i>
+        <input type="text" id="input-pistola-escaner" onchange="escanearProductoConPistola(this.value)" placeholder="Pistolea el producto aquí..." class="w-full bg-white border border-purple-300 rounded-lg p-2 text-xs font-mono outline-none focus:ring-2 focus:ring-purple-500">
+      </div>
+
+      <div id="armado-status-msg" class="hidden text-xs font-bold p-2.5 rounded-xl mb-3 text-center"></div>
+      <div id="armado-items-list" class="space-y-2 max-h-60 overflow-y-auto border-y border-gray-100 py-3"></div>
+
+      <button onclick="completarArmadoPedido()" class="w-full mt-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl text-xs transition">
+        ✅ Finalizar y Marcar 'En Preparación / Listo'
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL BOLETA / TICKET PARA IMPRIMIR -->
+  <div id="modal-boleta" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative">
+      <button onclick="toggleBoletaModal()" class="absolute right-4 top-4 text-gray-400 hover:text-gray-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div id="seccion-boleta-imprimir" class="p-2 text-gray-900 font-mono text-xs space-y-3">
+        <div class="text-center border-b border-gray-200 pb-2">
+          <h2 class="font-black text-base uppercase">DONDE LA COCO</h2>
+          <p class="text-[10px] text-gray-500">SUPERMERCADO ONLINE - CURICÓ</p>
+          <p id="bol-fecha" class="text-[10px] text-gray-400 mt-1"></p>
+        </div>
+
+        <div>
+          <p><strong>CÓDIGO:</strong> <span id="bol-codigo" class="font-bold"></span></p>
+          <p><strong>CLIENTE:</strong> <span id="bol-cliente"></span></p>
+          <p><strong>MODO:</strong> <span id="bol-modo"></span></p>
+          <p><strong>TEL:</strong> <span id="bol-telefono"></span></p>
+          <p><strong>DIR:</strong> <span id="bol-direccion"></span></p>
+        </div>
+
+        <div class="border-t border-b border-dashed border-gray-300 py-2">
+          <div id="bol-items" class="space-y-1"></div>
+        </div>
+
+        <div class="text-right text-sm font-black pt-1">
+          TOTAL: <span id="bol-total">$0 CLP</span>
+        </div>
+
+        <div class="text-center text-[9px] text-gray-400 pt-3 border-t border-gray-100">
+          ¡Gracias por comprar en DONDE LA COCO! 🥥
+        </div>
+      </div>
+
+      <button onclick="window.print()" class="w-full mt-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2">
+        <i class="fa-solid fa-print"></i> Imprimir Ticket / Boleta
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL EDITAR CLIENTE (ADMIN) -->
+  <div id="modal-editar-cliente" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
+      <button onclick="toggleEditarClienteModal()" class="absolute right-4 top-4 text-gray-400 hover:text-gray-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+      <div class="text-center mb-4">
+        <div class="bg-emerald-100 text-emerald-600 w-12 h-12 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold mb-2"><i class="fa-solid fa-user-pen"></i></div>
+        <h3 class="font-bold text-gray-900 text-lg">Editar Cuenta de Cliente</h3>
+      </div>
+      <form onsubmit="guardarEdicionCliente(event)" class="space-y-3">
+        <input type="hidden" id="edit-cli-id">
+        <div><label class="block text-xs font-bold text-gray-700 mb-1">Nombre</label><input type="text" id="edit-cli-nombre" required class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+        <div><label class="block text-xs font-bold text-gray-700 mb-1">Email</label><input type="email" id="edit-cli-email" required class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+        <div><label class="block text-xs font-bold text-gray-700 mb-1">Teléfono</label><input type="text" id="edit-cli-telefono" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+        <div><label class="block text-xs font-bold text-gray-700 mb-1">Dirección</label><input type="text" id="edit-cli-direccion" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+        <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl shadow-md transition">Guardar Cambios</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL DETALLE PEDIDO -->
+  <div id="modal-detalle-pedido" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
+      <button onclick="toggleDetallePedidoModal()" class="absolute right-4 top-4 text-gray-400 hover:text-gray-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+      <div class="text-center mb-4">
+        <div class="bg-emerald-100 text-emerald-600 w-12 h-12 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold mb-2"><i class="fa-solid fa-receipt"></i></div>
+        <h3 class="font-bold text-gray-900 text-lg">Detalle del Pedido <span id="det-codigo" class="text-emerald-600 font-mono">DLC-000000</span></h3>
+        <p id="det-cliente" class="text-xs text-gray-500 font-medium mt-1">Cliente: -</p>
+      </div>
+      <div id="det-items-list" class="space-y-2 my-4 max-h-60 overflow-y-auto border-y border-gray-100 py-3"></div>
+      <div class="flex justify-between items-center font-bold text-base text-gray-900">
+        <span>Total Compra:</span>
+        <span id="det-total" class="text-emerald-600">$0 CLP</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CHECKOUT COMPRA SIN WEBPAY (TRANSFERENCIA Y CONTRA ENTREGA) -->
+  <div id="modal-checkout-cliente" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
+      <button onclick="toggleCheckoutModal()" class="absolute right-4 top-4 text-gray-400 hover:text-gray-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div class="text-center mb-4">
+        <h3 class="font-bold text-gray-900 text-lg">Finalizar Compra</h3>
+        <p class="text-xs text-gray-400">Selecciona tu preferencia de entrega y pago</p>
+      </div>
+
+      <div class="flex gap-2 mb-3 bg-emerald-50 p-1 rounded-xl text-xs font-bold">
+        <button id="btn-entrega-despacho" type="button" onclick="seleccionarModoEntrega('Despacho a Domicilio')" class="flex-1 py-2 rounded-lg bg-emerald-600 text-white shadow-sm">🚚 Despacho a Domicilio</button>
+        <button id="btn-entrega-retiro" type="button" onclick="seleccionarModoEntrega('Retiro en Tienda')" class="flex-1 py-2 rounded-lg text-emerald-800 hover:bg-emerald-100">🏪 Retiro en Tienda</button>
+      </div>
+
+      <div class="flex gap-2 mb-4 bg-gray-100 p-1 rounded-xl text-xs font-bold">
+        <button id="btn-mode-invitado" onclick="seleccionarModoCheckout('invitado')" class="flex-1 py-2 rounded-lg bg-white text-emerald-600 shadow-sm">Sin Registro (Invitado)</button>
+        <button id="btn-mode-registrado" onclick="seleccionarModoCheckout('registrado')" class="flex-1 py-2 rounded-lg text-gray-500 hover:text-gray-700">Con Registro (Cuenta)</button>
+      </div>
+
+      <form onsubmit="confirmarPedidoCliente(event)" class="space-y-3">
+        <div><label class="block text-xs font-bold text-gray-700 mb-1">Nombre Completo</label><input type="text" id="check-nombre" required placeholder="Ej: Pichita" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+        <div><label class="block text-xs font-bold text-gray-700 mb-1">Correo Electrónico (Para recibir comprobante)</label><input type="email" id="check-email" required placeholder="tu@email.com" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+        
+        <div id="box-check-direccion">
+          <label class="block text-xs font-bold text-gray-700 mb-1">Dirección de Entrega en Curicó</label>
+          <input type="text" id="check-direccion" placeholder="Ej: Av. Manso de Velasco 123" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none">
+        </div>
+
+        <div><label class="block text-xs font-bold text-gray-700 mb-1">Teléfono de Contacto</label><input type="tel" id="check-telefono" required placeholder="+56 9 1234 5678" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+
+        <div id="box-checkout-crear-cuenta" class="hidden space-y-3 border-t border-gray-100 pt-3">
+          <div><label class="block text-xs font-bold text-gray-700 mb-1">Crear Contraseña</label><input type="password" id="check-password" placeholder="••••••••" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+        </div>
+
+        <!-- SELECCIÓN DE MÉTODO DE PAGO -->
+        <div class="mb-4 pt-2 border-t border-gray-100">
+          <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Método de Pago</label>
+          <div class="space-y-2">
+            <!-- Opción 1: Transferencia Bancaria -->
+            <label id="lblTransferencia" class="flex items-center justify-between p-3 border-2 border-emerald-600 bg-emerald-50 rounded-xl cursor-pointer transition">
+              <div class="flex items-center space-x-3">
+                <input type="radio" name="medioPagoModal" value="Transferencia Bancaria" checked onchange="seleccionarMedioPagoModal('Transferencia Bancaria')" class="accent-emerald-600 w-4 h-4">
+                <div>
+                  <div class="text-xs font-bold text-slate-800">🏦 Transferencia Bancaria</div>
+                  <div class="text-[10px] text-slate-500">Recibes datos de cuenta al confirmar</div>
+                </div>
+              </div>
+              <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">Disponible</span>
+            </label>
+
+            <!-- Opción 2: Pago Contra Entrega -->
+            <label id="lblContraEntrega" class="flex items-center justify-between p-3 border border-slate-200 bg-slate-50 rounded-xl cursor-pointer transition opacity-60">
+              <div class="flex items-center space-x-3">
+                <input type="radio" name="medioPagoModal" id="radioContraEntrega" value="Pago Contra Entrega" disabled onchange="seleccionarMedioPagoModal('Pago Contra Entrega')" class="accent-emerald-600 w-4 h-4">
+                <div>
+                  <div class="text-xs font-bold text-slate-800">💵 Pago Contra Entrega (Efectivo / Redelcom)</div>
+                  <div class="text-[10px] text-slate-500">Pagas al recibir en la puerta de tu hogar</div>
+                </div>
+              </div>
+              <span id="badgeContraEntrega" class="text-[10px] bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full font-bold">🔒 Requiere 1 compra previa</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100 flex items-center justify-between text-xs text-emerald-900 font-bold mt-2">
+          <span>Total Pedido:</span>
+          <span id="text-checkout-total" class="text-emerald-700 font-black text-sm">$0 CLP</span>
+        </div>
+
+        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+          ✅ Confirmar Pedido
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL AUTH CLIENTE -->
+  <div id="modal-auth-cliente" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative">
+      <button onclick="toggleAuthModal()" class="absolute right-4 top-4 text-gray-400 hover:text-gray-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+      <div class="text-center mb-4">
+        <div class="bg-emerald-100 text-emerald-600 w-12 h-12 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold mb-2"><i class="fa-solid fa-user"></i></div>
+        <h3 class="font-bold text-gray-900 text-lg">Mi Cuenta DONDE LA COCO</h3>
+      </div>
+      <div class="flex gap-2 mb-4 bg-gray-100 p-1 rounded-xl text-xs font-bold">
+        <button id="tab-auth-login" onclick="cambiarAuthTab('login')" class="flex-1 py-2 rounded-lg bg-white text-emerald-600 shadow-sm">Iniciar Sesión</button>
+        <button id="tab-auth-register" onclick="cambiarAuthTab('register')" class="flex-1 py-2 rounded-lg text-gray-500 hover:text-gray-700">Crear Cuenta Nueva</button>
+      </div>
+
+      <form id="form-auth-login" onsubmit="procesarLoginCliente(event)" class="space-y-3">
+        <div><label class="block text-xs font-bold text-gray-700 mb-1">Email</label><input type="email" id="auth-email" required placeholder="tu@email.com" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+        <div><label class="block text-xs font-bold text-gray-700 mb-1">Contraseña</label><input type="password" id="auth-password" required placeholder="••••••••" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+        <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl shadow-md transition">Iniciar Sesión</button>
+      </form>
+
+      <form id="form-auth-register" onsubmit="procesarRegistroNuevoCliente(event)" class="space-y-3 hidden">
+        <div><label class="block text-xs font-bold text-gray-700 mb-1">Nombre Completo</label><input type="text" id="reg-nombre" required placeholder="Ej: Pichita" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+        <div><label class="block text-xs font-bold text-gray-700 mb-1">Correo Electrónico</label><input type="email" id="reg-email" required placeholder="tu@email.com" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+        <div><label class="block text-xs font-bold text-gray-700 mb-1">Crear Contraseña</label><input type="password" id="reg-password" required placeholder="••••••••" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+        <div><label class="block text-xs font-bold text-gray-700 mb-1">Teléfono</label><input type="tel" id="reg-telefono" placeholder="+56 9 1234 5678" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+        <div><label class="block text-xs font-bold text-gray-700 mb-1">Dirección en Curicó</label><input type="text" id="reg-direccion" placeholder="Ej: Av. Manso de Velasco 123" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+        <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl shadow-md transition">Crear mi Cuenta</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL LOGIN ADMIN -->
+  <div id="modal-login-admin" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative">
+      <button onclick="toggleLoginModal()" class="absolute right-4 top-4 text-gray-400 hover:text-gray-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+      <div class="text-center mb-6">
+        <div class="bg-emerald-100 text-emerald-600 w-12 h-12 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold mb-2"><i class="fa-solid fa-user-shield"></i></div>
+        <h3 class="font-bold text-gray-900 text-lg">Acceso Administrador</h3>
+      </div>
+      <form onsubmit="procesarLoginAdmin(event)" class="space-y-4">
+        <div><label class="block text-xs font-bold text-gray-700 mb-1">Usuario</label><input type="text" id="login-usuario" required placeholder="admin" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+        <div><label class="block text-xs font-bold text-gray-700 mb-1">Contraseña</label><input type="password" id="login-pass" required placeholder="••••••••" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm outline-none"></div>
+        <button type="submit" class="w-full bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-md">Ingresar al Panel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- DRAWER CARRITO -->
+  <div id="modal-carrito" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden transition-opacity">
+    <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col justify-between">
+      <div class="p-4 border-b flex justify-between items-center bg-gray-50">
+        <h3 class="font-bold text-gray-800 flex items-center gap-2"><i class="fa-solid fa-cart-shopping text-emerald-500"></i> Tu Carrito de Compras</h3>
+        <button onclick="toggleCarrito()" class="text-gray-400 hover:text-gray-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="items-carrito" class="p-4 flex-1 overflow-y-auto space-y-3"><p class="text-center text-gray-400 py-10 text-sm">Tu carrito está vacío</p></div>
+      <div class="p-4 border-t bg-gray-50 space-y-3">
+        <div class="flex justify-between font-bold text-lg text-gray-900">
+          <span>Total a pagar:</span>
+          <span id="total-modal" class="text-emerald-600">$0 CLP</span>
+        </div>
+        <button onclick="abrirCheckoutModal()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl shadow-md transition">Pagar Pedido</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let productos = [];
+    let categorias = [];
+    let pedidos = [];
+    let clientes = [];
+    let carrito = [];
+    let clienteActual = null;
+    let pedidoEnArmado = null;
+    let itemsVerificados = {};
+    let modoCheckout = 'invitado';
+    let modoEntregaSeleccionado = 'Despacho a Domicilio';
+    let adminAutenticado = false;
+    let vistaActual = 'tienda';
+    let margenValido = false;
+    let esElegibleContraEntrega = false;
+
+    // --- CARGAR Y GUARDAR CARRITO PERSISTENTE EN BASE DE DATOS ---
+    async function cargarCarritoPersistente() {
+      if (!clienteActual) return;
+      try {
+        const res = await fetch(`/store/cart/${clienteActual.id}`);
+        if (res.ok) {
+          const itemsGuardados = await res.json();
+          if (Array.isArray(itemsGuardados) && itemsGuardados.length > 0) {
+            carrito = itemsGuardados;
+            actualizarCarritoUI();
+          }
+        }
+      } catch (err) { console.error('Error al cargar el carrito persistente:', err); }
+    }
+
+    async function guardarCarritoPersistente() {
+      if (!clienteActual) return;
+      try {
+        await fetch('/store/cart', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cliente_id: clienteActual.id, items: carrito })
+        });
+      } catch (err) { console.error('Error al guardar el carrito persistente:', err); }
+    }
+
+    async function cargarCategoriasDesdeBackend() {
+      try {
+        const res = await fetch('/store/categorias');
+        if (res.ok) {
+          categorias = await res.json();
+          renderBarraCategoriasNav();
+          renderSelectCategoriasERP();
+        }
+      } catch (err) { console.error(err); }
+    }
+
+    function renderBarraCategoriasNav() {
+      const contenedor = document.getElementById('contenedor-categorias-nav');
+      let html = `<button onclick="filtrarCategoria('todas')" class="px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-800 font-bold hover:bg-emerald-200 transition">Todas</button>`;
+
+      categorias.forEach(c => {
+        html += `<button onclick="filtrarCategoria('${c.nombre}')" class="px-3 py-1.5 rounded-full hover:bg-gray-100 transition flex items-center gap-1.5"><i class="fa-solid fa-tag text-emerald-500"></i> ${c.nombre}</button>`;
+      });
+
+      html += `<span class="text-gray-300">|</span>
+        <button onclick="filtrarEtiqueta('Orgánico')" class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold hover:bg-emerald-100 transition">🌱 Orgánico</button>
+        <button onclick="filtrarEtiqueta('Vegano')" class="px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-bold hover:bg-green-100 transition">🥬 Vegano</button>
+        <button onclick="filtrarEtiqueta('Sin Gluten')" class="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 font-bold hover:bg-amber-100 transition">🌾 Sin Gluten</button>
+        <button onclick="filtrarEtiqueta('Sin Azúcar')" class="px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 font-bold hover:bg-purple-100 transition">🍬 Sin Azúcar</button>`;
+
+      contenedor.innerHTML = html;
+    }
+
+    function renderSelectCategoriasERP() {
+      const select = document.getElementById('admin-categoria');
+      let html = '';
+      categorias.forEach(c => {
+        html += `<option value="${c.nombre}">${c.nombre}</option>`;
+      });
+      html += `<option value="__nueva__">➕ + Crear Nueva Categoría...</option>`;
+      select.innerHTML = html;
+    }
+
+    function evaluarSeleccionCategoria(val) {
+      if (val === '__nueva__') mostrarInputNuevaCategoria();
+      else document.getElementById('box-nueva-categoria').classList.add('hidden');
+    }
+
+    function mostrarInputNuevaCategoria() {
+      document.getElementById('box-nueva-categoria').classList.remove('hidden');
+      document.getElementById('admin-nueva-categoria-input').focus();
+    }
+
+    async function cargarProductosDesdeBackend() {
+      try {
+        const res = await fetch('/store/productos');
+        if (res.ok) {
+          productos = await res.json();
+          if (vistaActual === 'admin') renderTablaAdmin();
+          else if (vistaActual === 'tienda') renderProductos(productos);
+        }
+      } catch (err) { console.error(err); }
+    }
+
+    async function cargarPedidosDesdeBackend() {
+      try {
+        const res = await fetch('/store/pedidos');
+        if (res.ok) {
+          pedidos = await res.json();
+          renderTablaPedidos();
+          if (vistaActual === 'admin') renderTablaAdmin();
+        }
+      } catch (err) { console.error(err); }
+    }
+
+    async function cargarClientesDesdeBackend() {
+      try {
+        const res = await fetch('/store/clientes');
+        if (res.ok) {
+          clientes = await res.json();
+          renderTablaClientes();
+        }
+      } catch (err) { console.error(err); }
+    }
+
+    function calcularLógicaFiscal() {
+      const costoNeto = parseFloat(document.getElementById('admin-costo-neto').value) || 0;
+      const precioBruto = parseFloat(document.getElementById('admin-precio-bruto').value) || 0;
+
+      const ivaCreditoFavor = Math.round(costoNeto * 0.19);
+      const costoBrutoTotal = Math.round(costoNeto * 1.19);
+
+      const ventaNeto = Math.round(precioBruto / 1.19);
+      const ivaDebitoPagar = precioBruto - ventaNeto;
+
+      const gananciaNetaReal = ventaNeto - costoNeto;
+      const porcentajeMargen = costoNeto > 0 ? ((gananciaNetaReal / costoNeto) * 100).toFixed(1) : 0;
+
+      document.getElementById('lbl-iva-credito').innerText = '$' + ivaCreditoFavor.toLocaleString('es-CL');
+      document.getElementById('lbl-costo-bruto').innerText = '$' + costoBrutoTotal.toLocaleString('es-CL');
+
+      document.getElementById('lbl-venta-neto').innerText = '$' + ventaNeto.toLocaleString('es-CL');
+      document.getElementById('lbl-iva-debito').innerText = '$' + ivaDebitoPagar.toLocaleString('es-CL');
+
+      const boxAlert = document.getElementById('box-alerta-fiscal');
+      const btnGuardar = document.getElementById('btn-guardar-prod');
+
+      if (costoNeto > 0 && precioBruto > 0) {
+        boxAlert.classList.remove('hidden');
+
+        if (gananciaNetaReal <= 0) {
+          margenValido = false;
+          boxAlert.className = 'p-3 rounded-xl border text-xs font-bold flex justify-between items-center bg-red-100 border-red-300 text-red-800';
+          document.getElementById('text-alerta-fiscal-msg').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> 🛑 ALERTA: ¡PRECIO DE PÉRDIDA! Estás vendiendo bajo el costo o perdiendo dinero en IVA.';
+          document.getElementById('text-alerta-fiscal-val').innerText = `-$${Math.abs(gananciaNetaReal).toLocaleString('es-CL')}`;
+          btnGuardar.disabled = true;
+          btnGuardar.classList.add('opacity-50', 'cursor-not-allowed');
+        } else {
+          margenValido = true;
+          boxAlert.className = 'p-3 rounded-xl border text-xs font-bold flex justify-between items-center bg-emerald-100 border-emerald-300 text-emerald-900';
+          document.getElementById('text-alerta-fiscal-msg').innerHTML = `<i class="fa-solid fa-circle-check"></i> ✅ Margen Rentable: +${porcentajeMargen}% (Ganancia Neta descontando IVA)`;
+          document.getElementById('text-alerta-fiscal-val').innerText = `+$${gananciaNetaReal.toLocaleString('es-CL')} CLP`;
+          btnGuardar.disabled = false;
+          btnGuardar.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+      } else {
+        boxAlert.classList.add('hidden');
+      }
+    }
+
+    function renderTablaAdmin() {
+      const tabla = document.getElementById('tabla-admin-productos');
+      let valorInventarioNetoTotal = 0;
+      let totalIvaCreditoAcumulado = 0;
+      let totalVentasAcumuladas = pedidos.reduce((acc, p) => acc + p.total, 0);
+
+      let gananciaNetaAcumulada = 0;
+      let totalIvaDebitoAcumulado = 0;
+
+      pedidos.forEach(p => {
+        (p.items || []).forEach(i => {
+          const costoNetoUn = i.costo_neto || Math.round((i.costo || (i.precio * 0.6)) / 1.19);
+          const ventaNetoUn = Math.round(i.precio / 1.19);
+          const ivaDebitoUn = i.precio - ventaNetoUn;
+
+          gananciaNetaAcumulada += (ventaNetoUn - costoNetoUn) * i.cant;
+          totalIvaDebitoAcumulado += ivaDebitoUn * i.cant;
+        });
+      });
+
+      tabla.innerHTML = productos.map(p => {
+        const costoNeto = p.costo_neto || Math.round((p.costo || 0) / 1.19);
+        const ivaCredito = Math.round(costoNeto * 0.19);
+        const ventaNeto = p.precio_neto || Math.round(p.precio / 1.19);
+        const ivaDebito = p.precio - ventaNeto;
+        const gananciaReal = ventaNeto - costoNeto;
+
+        valorInventarioNetoTotal += costoNeto * p.stock;
+        totalIvaCreditoAcumulado += ivaCredito * p.stock;
+
+        return `
+          <tr class="hover:bg-gray-50">
+            <td class="py-3 px-2 font-mono font-bold text-emerald-600">${p.sku || 'N/A'}</td>
+            <td class="py-3 px-2 font-bold">${p.nombre}</td>
+            <td class="py-3 px-2 text-gray-500">${p.categoria}</td>
+            <td class="py-3 px-2 font-semibold text-blue-900">$${costoNeto.toLocaleString('es-CL')}</td>
+            <td class="py-3 px-2 font-extrabold text-emerald-600">$${p.precio.toLocaleString('es-CL')}</td>
+            <td class="py-3 px-2">
+              <span class="bg-blue-50 text-blue-800 font-bold px-2 py-0.5 rounded-full text-[10px]">
+                +$${gananciaReal.toLocaleString('es-CL')} CLP
+              </span>
+            </td>
+            <td class="py-3 px-2 text-right space-x-1">
+              <button onclick='cargarParaEditarProducto(${JSON.stringify(p)})' class="text-blue-500 hover:text-blue-700 p-1"><i class="fa-solid fa-pen-to-square"></i></button>
+              <button onclick="eliminarProducto(${p.id})" class="text-red-400 hover:text-red-600 p-1"><i class="fa-solid fa-trash-can"></i></button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      document.getElementById('stat-valor-inv').innerText = '$' + valorInventarioNetoTotal.toLocaleString('es-CL') + ' CLP';
+      document.getElementById('stat-iva-credito').innerText = '$' + totalIvaCreditoAcumulado.toLocaleString('es-CL') + ' CLP';
+      document.getElementById('stat-ventas-totales').innerText = '$' + totalVentasAcumuladas.toLocaleString('es-CL') + ' CLP';
+      document.getElementById('stat-ganancia-neta').innerText = '$' + gananciaNetaAcumulada.toLocaleString('es-CL') + ' CLP';
+      document.getElementById('stat-iva-debito').innerText = '$' + totalIvaDebitoAcumulado.toLocaleString('es-CL') + ' CLP';
+    }
+
+    function cargarParaEditarProducto(p) {
+      document.getElementById('admin-prod-id').value = p.id;
+      document.getElementById('admin-sku').value = p.sku || '';
+      document.getElementById('admin-nombre').value = p.nombre;
+      
+      const costoNeto = p.costo_neto || Math.round((p.costo || 0) / 1.19);
+      document.getElementById('admin-costo-neto').value = costoNeto;
+      document.getElementById('admin-precio-bruto').value = p.precio;
+
+      document.getElementById('admin-stock').value = p.stock;
+      document.getElementById('admin-unidad').value = p.unidad;
+      document.getElementById('admin-categoria').value = p.categoria;
+      document.getElementById('admin-etiqueta').value = p.etiqueta || '';
+      document.getElementById('admin-img').value = p.img && !p.img.startsWith('/store/uploads/') && !p.img.startsWith('http') ? p.img : '';
+
+      document.getElementById('titulo-form-prod').innerHTML = '<i class="fa-solid fa-pen-to-square text-blue-500"></i> Editar Producto';
+      document.getElementById('btn-guardar-prod').innerText = 'Actualizar Producto';
+      document.getElementById('btn-cancelar-edit-prod').classList.remove('hidden');
+      calcularLógicaFiscal();
+    }
+
+    function limpiarFormProducto() {
+      document.getElementById('admin-prod-id').value = '';
+      document.getElementById('admin-sku').value = '';
+      document.getElementById('admin-nombre').value = '';
+      document.getElementById('admin-costo-neto').value = '';
+      document.getElementById('admin-precio-bruto').value = '';
+      document.getElementById('admin-stock').value = '';
+      document.getElementById('admin-img').value = '';
+      document.getElementById('admin-file-imagen').value = '';
+      document.getElementById('box-nueva-categoria').classList.add('hidden');
+      document.getElementById('admin-nueva-categoria-input').value = '';
+      document.getElementById('titulo-form-prod').innerHTML = '<i class="fa-solid fa-calculator text-emerald-500"></i> Ingreso de Stock & Fiscal';
+      document.getElementById('btn-guardar-prod').innerText = 'Guardar en PostgreSQL';
+      document.getElementById('btn-cancelar-edit-prod').classList.add('hidden');
+      document.getElementById('box-alerta-fiscal').classList.add('hidden');
+    }
+
+    async function guardarNuevoProducto(e) {
+      e.preventDefault();
+      if (!margenValido) return alert('🛑 No se puede guardar un producto con precio de venta inferior o sin ganancia neta.');
+
+      const nombreProd = document.getElementById('admin-nombre').value.trim();
+      if (!nombreProd) return alert('⚠️ Por favor escribe el nombre del producto antes de guardar.');
+
+      const prodId = document.getElementById('admin-prod-id').value;
+      const skuInput = document.getElementById('admin-sku').value.trim();
+      const skuFinal = skuInput !== '' ? skuInput : 'SKU-' + Date.now();
+
+      const costoNeto = parseInt(document.getElementById('admin-costo-neto').value) || 0;
+      const costoBruto = Math.round(costoNeto * 1.19);
+      const precioBruto = parseInt(document.getElementById('admin-precio-bruto').value) || 0;
+      const precioNeto = Math.round(precioBruto / 1.19);
+
+      let categoriaFinal = document.getElementById('admin-categoria').value;
+      if (categoriaFinal === '__nueva__' || !document.getElementById('box-nueva-categoria').classList.contains('hidden')) {
+        const catInput = document.getElementById('admin-nueva-categoria-input').value.trim();
+        if (!catInput) return alert('Escribe el nombre de la nueva categoría.');
+        categoriaFinal = catInput;
+      }
+
+      const fileInput = document.getElementById('admin-file-imagen');
+      const emojiInput = document.getElementById('admin-img').value;
+
+      let imgPath = emojiInput || '📦';
+      if (fileInput.files.length > 0) {
+        const formData = new FormData();
+        formData.append('imagen', fileInput.files[0]);
+        try {
+          const uploadRes = await fetch('/store/upload', { method: 'POST', body: formData });
+          if (uploadRes.ok) {
+            const data = await uploadRes.json();
+            imgPath = data.url;
+          }
+        } catch (err) { return alert('Error al subir la imagen.'); }
+      }
+
+      const productoData = {
+        sku: skuFinal,
+        nombre: nombreProd,
+        costo: costoBruto,
+        costo_neto: costoNeto,
+        costo_bruto: costoBruto,
+        precio_neto: precioNeto,
+        precio: precioBruto,
+        stock: parseInt(document.getElementById('admin-stock').value) || 0,
+        unidad: document.getElementById('admin-unidad').value,
+        categoria: categoriaFinal,
+        etiqueta: document.getElementById('admin-etiqueta').value,
+        img: imgPath
+      };
+
+      try {
+        let res;
+        if (prodId && prodId.trim() !== '') {
+          res = await fetch(`/store/productos/${prodId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(productoData)
+          });
+        } else {
+          res = await fetch('/store/productos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(productoData)
+          });
+        }
+
+        if (res.ok) {
+          limpiarFormProducto();
+          await cargarCategoriasDesdeBackend();
+          await cargarProductosDesdeBackend();
+          alert(prodId ? '¡Producto actualizado correctamente!' : '🎉 ¡Producto "' + nombreProd + '" guardado exitosamente!');
+        } else {
+          const errData = await res.json();
+          alert(errData.error || 'Error al guardar producto');
+        }
+      } catch (err) { alert('Error de conexión.'); }
+    }
+
+    function focarPistola(inputId) {
+      const el = document.getElementById(inputId);
+      if (el) {
+        el.focus();
+        el.select();
+      }
+    }
+
+    function abrirArmadoPistola(pedido) {
+      pedidoEnArmado = pedido;
+      itemsVerificados = {};
+      (pedido.items || []).forEach(item => {
+        itemsVerificados[item.sku || item.id] = 0;
+      });
+
+      document.getElementById('armado-codigo-pedido').innerText = pedido.codigo_pedido || ('DLC-' + pedido.id);
+      renderItemsArmadoPistola();
+      toggleArmadoPistolaModal();
+
+      setTimeout(() => focarPistola('input-pistola-escaner'), 300);
+    }
+
+    function renderItemsArmadoPistola() {
+      const contenedor = document.getElementById('armado-items-list');
+      contenedor.innerHTML = (pedidoEnArmado.items || []).map(i => {
+        const key = i.sku || i.id;
+        const cantEscaneada = itemsVerificados[key] || 0;
+        const completado = cantEscaneada >= i.cant;
+
+        return `
+          <div class="flex items-center justify-between p-3 rounded-xl border ${completado ? 'bg-emerald-50 border-emerald-200' : 'bg-gray-50 border-gray-100'} text-xs">
+            <div>
+              <p class="font-mono text-[10px] text-gray-400">SKU: ${i.sku || 'N/A'}</p>
+              <p class="font-bold text-gray-800">${i.nombre}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="font-mono font-bold px-2 py-1 rounded-lg ${completado ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-700'}">
+                ${cantEscaneada} / ${i.cant} ${i.unidad}
+              </span>
+              ${completado ? '<i class="fa-solid fa-circle-check text-emerald-500 text-base"></i>' : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function escanearProductoConPistola(codigoIngresado) {
+      if (!pedidoEnArmado || !codigoIngresado) return;
+      const codigo = codigoIngresado.trim();
+      const statusBox = document.getElementById('armado-status-msg');
+
+      const itemEncontrado = (pedidoEnArmado.items || []).find(i => (i.sku && i.sku === codigo) || i.id.toString() === codigo);
+
+      if (itemEncontrado) {
+        const key = itemEncontrado.sku || itemEncontrado.id;
+        if (itemsVerificados[key] < itemEncontrado.cant) {
+          itemsVerificados[key]++;
+          statusBox.className = 'text-xs font-bold p-2.5 rounded-xl mb-3 text-center bg-emerald-100 text-emerald-800';
+          statusBox.innerText = `✅ Ítem correcto: ${itemEncontrado.nombre} (${itemsVerificados[key]}/${itemEncontrado.cant})`;
+        } else {
+          statusBox.className = 'text-xs font-bold p-2.5 rounded-xl mb-3 text-center bg-yellow-100 text-yellow-800';
+          statusBox.innerText = `⚠️ Ya pistoleaste todas las unidades requeridas de ${itemEncontrado.nombre}`;
+        }
+      } else {
+        statusBox.className = 'text-xs font-bold p-2.5 rounded-xl mb-3 text-center bg-red-100 text-red-800';
+        statusBox.innerText = `🚨 ¡ERROR! El producto escaneado [${codigo}] NO pertenece a esta orden.`;
+      }
+
+      statusBox.classList.remove('hidden');
+      renderItemsArmadoPistola();
+      document.getElementById('input-pistola-escaner').value = '';
+      focarPistola('input-pistola-escaner');
+    }
+
+    async function completarArmadoPedido() {
+      if (!pedidoEnArmado) return;
+      await cambiarEstadoPedido(pedidoEnArmado.id, 'En Preparación');
+      toggleArmadoPistolaModal();
+      alert(`🎉 Pedido ${pedidoEnArmado.codigo_pedido} verificado con éxito por pistola lectora.`);
+    }
+
+    function toggleArmadoPistolaModal() { document.getElementById('modal-armado-pistola').classList.toggle('hidden'); }
+
+    // RENDERIZADO CORREGIDO DE TARJETAS E IMÁGENES
+    function renderProductos(lista) {
+      const grid = document.getElementById('grid-productos');
+      grid.innerHTML = lista.map(p => {
+        const esUrl = p.img && (p.img.startsWith('/store/uploads/') || p.img.startsWith('http'));
+        const mediaHtml = esUrl 
+          ? `<img src="${p.img}" alt="${p.nombre}" class="max-h-28 w-full object-contain mx-auto group-hover:scale-105 transition duration-300">`
+          : `<span class="text-5xl group-hover:scale-110 transition duration-300 inline-block">${p.img || '📦'}</span>`;
+
+        return `
+          <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition flex flex-col justify-between relative group">
+            <div class="absolute top-3 left-3 flex flex-col gap-1 z-10">
+              ${p.oferta ? `<span class="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">${p.descuento_tag || 'OFERTA'}</span>` : ''}
+              ${p.etiqueta ? `<span class="bg-emerald-100 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded-full">${p.etiqueta}</span>` : ''}
+            </div>
+            <div class="text-center py-2 h-32 w-full flex items-center justify-center overflow-hidden bg-gray-50/50 rounded-xl mb-2">${mediaHtml}</div>
+            <div class="space-y-1">
+              <span class="text-[9px] font-mono text-gray-400">SKU: ${p.sku || 'N/A'}</span>
+              <h3 class="font-bold text-sm text-gray-800 line-clamp-2 leading-snug">${p.nombre}</h3>
+              <p class="text-xs text-gray-400">Por ${p.unidad} (Stock: ${p.stock})</p>
+              <div class="pt-2 flex justify-between items-center">
+                <span class="text-emerald-600 font-extrabold text-base">$${p.precio.toLocaleString('es-CL')}</span>
+                <button onclick="agregarAlCarrito(${p.id})" class="bg-emerald-50 hover:bg-emerald-500 text-emerald-600 hover:text-white p-2 rounded-xl transition">
+                  <i class="fa-solid fa-plus text-xs"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('contador-productos').innerText = `Mostrando ${lista.length} productos`;
+    }
+
+    function renderTablaPedidos() {
+      const tabla = document.getElementById('tabla-admin-pedidos');
+      document.getElementById('badge-total-pedidos').innerText = pedidos.length;
+
+      tabla.innerHTML = pedidos.map(p => {
+        let badgeColor = 'bg-yellow-50 text-yellow-700 border-yellow-200';
+        if (p.estado === 'En Preparación') badgeColor = 'bg-blue-50 text-blue-700 border-blue-200';
+        if (p.estado === 'En Camino') badgeColor = 'bg-purple-50 text-purple-700 border-purple-200';
+        if (p.estado === 'Entregado' || p.estado === 'Pagado') badgeColor = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+
+        return `
+          <tr class="hover:bg-gray-50">
+            <td class="py-3 px-2 font-mono font-extrabold text-emerald-600">${p.codigo_pedido || 'DLC-' + p.id}</td>
+            <td class="py-3 px-2"><span class="bg-gray-100 text-gray-600 text-[9px] font-black px-2 py-0.5 rounded-full">${p.tipo_compra}</span></td>
+            <td class="py-3 px-2 font-bold text-gray-700 text-xs">${p.modo_entrega || 'Despacho'}</td>
+            <td class="py-3 px-2 font-bold text-gray-800">${p.cliente_nombre}</td>
+            <td class="py-3 px-2 text-gray-600">${p.direccion}</td>
+            <td class="py-3 px-2 font-extrabold text-emerald-600">$${p.total.toLocaleString('es-CL')}</td>
+            <td class="py-3 px-2"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold border ${badgeColor}">${p.estado}</span></td>
+            <td class="py-3 px-2 text-center space-x-1">
+              <button onclick='abrirArmadoPistola(${JSON.stringify(p)})' class="bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold px-2 py-1 rounded-lg text-xs" title="Pistolear"><i class="fa-solid fa-barcode"></i></button>
+              <button onclick='verDetallePedido(${JSON.stringify(p)})' class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold px-2 py-1 rounded-lg text-xs"><i class="fa-solid fa-eye"></i></button>
+              <button onclick='imprimirBoletaPedido(${JSON.stringify(p)})' class="bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold px-2 py-1 rounded-lg text-xs"><i class="fa-solid fa-print"></i></button>
+            </td>
+            <td class="py-3 px-2 text-right">
+              <select onchange="cambiarEstadoPedido(${p.id}, this.value)" class="bg-gray-50 border border-gray-200 rounded-lg p-1 text-xs">
+                <option value="Pendiente" ${p.estado === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
+                <option value="Pagado" ${p.estado === 'Pagado' ? 'selected' : ''}>Pagado</option>
+                <option value="En Preparación" ${p.estado === 'En Preparación' ? 'selected' : ''}>En Preparación</option>
+                <option value="En Camino" ${p.estado === 'En Camino' ? 'selected' : ''}>En Camino</option>
+                <option value="Entregado" ${p.estado === 'Entregado' ? 'selected' : ''}>Entregado</option>
+              </select>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function cargarMisPedidosPrivados() {
+      if (!clienteActual) return;
+      const contenedor = document.getElementById('lista-mis-pedidos');
+      try {
+        const res = await fetch(`/store/clientes/${clienteActual.id}/pedidos`);
+        if (res.ok) {
+          const misPedidos = await res.json();
+          if (misPedidos.length === 0) {
+            contenedor.innerHTML = '<p class="text-center text-gray-400 py-8 text-sm">Aún no has realizado ninguna compra con tu cuenta.</p>';
+            return;
+          }
+
+          contenedor.innerHTML = misPedidos.map(p => {
+            let badgeColor = 'bg-yellow-50 text-yellow-700 border-yellow-200';
+            if (p.estado === 'En Preparación') badgeColor = 'bg-blue-50 text-blue-700 border-blue-200';
+            if (p.estado === 'En Camino') badgeColor = 'bg-purple-50 text-purple-700 border-purple-200';
+            if (p.estado === 'Entregado' || p.estado === 'Pagado') badgeColor = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+
+            return `
+              <div class="bg-gray-50 border border-gray-100 rounded-2xl p-4 space-y-3">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-gray-200/60 pb-3">
+                  <div>
+                    <span class="font-mono font-extrabold text-emerald-600 text-sm">${p.codigo_pedido}</span>
+                    <p class="text-[10px] text-gray-400">${new Date(p.fecha).toLocaleString()}</p>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="px-3 py-1 rounded-full text-xs font-bold border ${badgeColor}">${p.estado}</span>
+                    <span class="font-black text-gray-900 text-base">$${p.total.toLocaleString('es-CL')}</span>
+                  </div>
+                </div>
+
+                <div class="space-y-1">
+                  ${(p.items || []).map(i => `
+                    <div class="flex justify-between text-xs text-gray-600">
+                      <span>• ${i.nombre} (x${i.cant})</span>
+                      <span class="font-bold text-gray-800">$${(i.precio * i.cant).toLocaleString('es-CL')}</span>
+                    </div>
+                  `).join('')}
+                </div>
+
+                <div class="text-[11px] text-gray-400 border-t border-gray-200/60 pt-2 flex justify-between">
+                  <span>📦 ${p.modo_entrega || 'Despacho'}: ${p.direccion}</span>
+                  <span>💳 ${p.medio_pago || 'Transferencia Bancaria'}</span>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      } catch (err) { contenedor.innerHTML = '<p class="text-center text-red-400 py-8 text-sm">Error al cargar historial.</p>'; }
+    }
+
+    function seleccionarModoEntrega(modo) {
+      modoEntregaSeleccionado = modo;
+      const btnDesp = document.getElementById('btn-entrega-despacho');
+      const btnRet = document.getElementById('btn-entrega-retiro');
+      const boxDir = document.getElementById('box-check-direccion');
+
+      if (modo === 'Despacho a Domicilio') {
+        btnDesp.className = 'flex-1 py-2 rounded-lg bg-emerald-600 text-white shadow-sm font-bold';
+        btnRet.className = 'flex-1 py-2 rounded-lg text-emerald-800 hover:bg-emerald-100 font-bold';
+        boxDir.classList.remove('hidden');
+        document.getElementById('check-direccion').required = true;
+      } else {
+        btnRet.className = 'flex-1 py-2 rounded-lg bg-emerald-600 text-white shadow-sm font-bold';
+        btnDesp.className = 'flex-1 py-2 rounded-lg text-emerald-800 hover:bg-emerald-100 font-bold';
+        boxDir.classList.add('hidden');
+        document.getElementById('check-direccion').required = false;
+        document.getElementById('check-direccion').value = 'Retiro Presencial en Local Curicó';
+      }
+    }
+
+    function filtrarEtiqueta(etiq) { renderProductos(productos.filter(p => p.etiqueta === etiq)); }
+
+    function renderTablaClientes() {
+      const tabla = document.getElementById('tabla-admin-clientes');
+      tabla.innerHTML = clientes.map(c => `
+        <tr class="hover:bg-gray-50">
+          <td class="py-3 px-2 font-bold text-gray-400">#${c.id}</td>
+          <td class="py-3 px-2 font-bold text-gray-800">${c.nombre}</td>
+          <td class="py-3 px-2 text-gray-600">${c.email}</td>
+          <td class="py-3 px-2 text-gray-500">${c.telefono || 'Sin teléfono'}</td>
+          <td class="py-3 px-2 text-gray-500">${c.direccion || 'Sin dirección'}</td>
+          <td class="py-3 px-2 text-gray-400 text-[10px]">${new Date(c.fecha_registro).toLocaleDateString()}</td>
+          <td class="py-3 px-2 text-right space-x-1">
+            <button onclick='abrirModalEditarCliente(${JSON.stringify(c)})' class="text-blue-500 hover:text-blue-700 p-1"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button onclick="eliminarCliente(${c.id})" class="text-red-400 hover:text-red-600 p-1"><i class="fa-solid fa-trash-can"></i></button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function cargarDatosEnPortalPrivado() {
+      if (!clienteActual) return;
+      document.getElementById('portal-nombre').value = clienteActual.nombre;
+      document.getElementById('portal-email').value = clienteActual.email;
+      document.getElementById('portal-password').value = '';
+      document.getElementById('portal-telefono').value = clienteActual.telefono || '';
+      document.getElementById('portal-direccion').value = clienteActual.direccion || '';
+      cargarMisPedidosPrivados();
+    }
+
+    async function guardarPerfilClientePropio(e) {
+      e.preventDefault();
+      const isPortal = vistaActual === 'portal-cliente';
+      const data = {
+        nombre: document.getElementById(isPortal ? 'portal-nombre' : 'perfil-nombre').value,
+        email: document.getElementById(isPortal ? 'portal-email' : 'perfil-email').value,
+        password: document.getElementById(isPortal ? 'portal-password' : 'perfil-password').value,
+        telefono: document.getElementById(isPortal ? 'portal-telefono' : 'perfil-telefono').value,
+        direccion: document.getElementById(isPortal ? 'portal-direccion' : 'perfil-direccion').value
+      };
+
+      try {
+        const res = await fetch(`/store/clientes/perfil/${clienteActual.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (res.ok) {
+          clienteActual = await res.json();
+          actualizarUICliente();
+          alert('🎉 ¡Tus datos han sido actualizados correctamente!');
+        }
+      } catch (err) { alert('Error al actualizar el perfil.'); }
+    }
+
+    function toggleBotChat() { document.getElementById('box-bot-chat').classList.toggle('hidden'); }
+
+    function responderBot(tipo) {
+      const box = document.getElementById('bot-messages');
+      let preg = '', resp = '';
+
+      if (tipo === 'horarios') {
+        preg = '🕒 ¿Cuáles son sus horarios de entrega?';
+        resp = '🚚 Entregamos el mismo día en Curicó para pedidos realizados antes de las 14:00 hrs.';
+      } else if (tipo === 'despacho') {
+        preg = '🚚 ¿Cuánto cuesta el despacho?';
+        resp = '🎉 ¡El despacho es GRATIS en Curicó por compras sobre $25.000! O puedes elegir Retiro en Tienda gratis.';
+      } else if (tipo === 'chilexpress') {
+        preg = '📦 ¿Cómo funciona el servicio de Chilexpress?';
+        resp = '📦 ¡Somos Punto Full Service autorizado de Chilexpress! Puedes traer tus encomiendas, sobres y paquetes para envíos a todo Chile, o retirarlos en nuestro local.';
+      } else if (tipo === 'humano') {
+        preg = '📲 Quiero hablar con un ejecutivo humano';
+        resp = '<a href="https://wa.me/56934513071?text=Hola,%20quisiera%20atencion%20personalizada" target="_blank" class="text-green-600 font-bold underline">Haz clic aquí para abrir WhatsApp con un agente</a>.';
+      }
+
+      box.innerHTML += `
+        <div class="bg-emerald-50 p-2 rounded-xl border border-emerald-100 text-emerald-900 ml-auto max-w-[85%] font-medium my-1">${preg}</div>
+        <div class="bg-white p-2.5 rounded-xl border border-gray-100 shadow-sm max-w-[85%] text-gray-700 my-1">${resp}</div>
+      `;
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function abrirModalEditarCliente(c) {
+      document.getElementById('edit-cli-id').value = c.id;
+      document.getElementById('edit-cli-nombre').value = c.nombre;
+      document.getElementById('edit-cli-email').value = c.email;
+      document.getElementById('edit-cli-telefono').value = c.telefono || '';
+      document.getElementById('edit-cli-direccion').value = c.direccion || '';
+      toggleEditarClienteModal();
+    }
+
+    function toggleEditarClienteModal() { document.getElementById('modal-editar-cliente').classList.toggle('hidden'); }
+
+    async function guardarEdicionCliente(e) {
+      e.preventDefault();
+      const id = document.getElementById('edit-cli-id').value;
+      const data = {
+        nombre: document.getElementById('edit-cli-nombre').value,
+        email: document.getElementById('edit-cli-email').value,
+        telefono: document.getElementById('edit-cli-telefono').value,
+        direccion: document.getElementById('edit-cli-direccion').value
+      };
+
+      try {
+        const res = await fetch(`/store/clientes/perfil/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (res.ok) {
+          toggleEditarClienteModal();
+          await cargarClientesDesdeBackend();
+          alert('¡Cuenta de cliente actualizada!');
+        }
+      } catch (err) { alert('Error al actualizar cliente.'); }
+    }
+
+    async function eliminarCliente(id) {
+      if (confirm('¿Estás segura de eliminar esta cuenta de cliente?')) {
+        try {
+          const res = await fetch(`/store/clientes/${id}`, { method: 'DELETE' });
+          if (res.ok) await cargarClientesDesdeBackend();
+        } catch (err) { alert('Error al eliminar cliente.'); }
+      }
+    }
+
+    function cambiarAuthTab(tab) {
+      const isLogin = tab === 'login';
+      document.getElementById('tab-auth-login').className = isLogin ? 'flex-1 py-2 rounded-lg bg-white text-emerald-600 shadow-sm font-bold' : 'flex-1 py-2 rounded-lg text-gray-500 hover:text-gray-700 font-bold';
+      document.getElementById('tab-auth-register').className = !isLogin ? 'flex-1 py-2 rounded-lg bg-white text-emerald-600 shadow-sm font-bold' : 'flex-1 py-2 rounded-lg text-gray-500 hover:text-gray-700 font-bold';
+      document.getElementById('form-auth-login').classList.toggle('hidden', !isLogin);
+      document.getElementById('form-auth-register').classList.toggle('hidden', isLogin);
+    }
+
+    async function procesarRegistroNuevoCliente(e) {
+      e.preventDefault();
+      const data = {
+        nombre: document.getElementById('reg-nombre').value,
+        email: document.getElementById('reg-email').value,
+        password: document.getElementById('reg-password').value,
+        telefono: document.getElementById('reg-telefono').value,
+        direccion: document.getElementById('reg-direccion').value
+      };
+
+      try {
+        const res = await fetch('/store/clientes/registro', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (res.ok) {
+          clienteActual = await res.json();
+          actualizarUICliente();
+          await cargarCarritoPersistente();
+          toggleAuthModal();
+          mostrarVista('portal-cliente');
+          alert(`🎉 ¡Cuenta creada con éxito! Se ha enviado un correo de bienvenida a ${clienteActual.email}.`);
+        } else {
+          const err = await res.json();
+          alert(err.error || 'Error al registrar.');
+        }
+      } catch (err) { alert('Error de conexión.'); }
+    }
+
+    function imprimirBoletaPedido(p) {
+      document.getElementById('bol-codigo').innerText = p.codigo_pedido || ('DLC-' + p.id);
+      document.getElementById('bol-fecha').innerText = new Date(p.fecha).toLocaleString();
+      document.getElementById('bol-cliente').innerText = p.cliente_nombre;
+      document.getElementById('bol-modo').innerText = p.modo_entrega || 'Despacho a Domicilio';
+      document.getElementById('bol-telefono').innerText = p.cliente_telefono;
+      document.getElementById('bol-direccion').innerText = p.direccion;
+      document.getElementById('bol-total').innerText = '$' + p.total.toLocaleString('es-CL') + ' CLP';
+
+      const contenedor = document.getElementById('bol-items');
+      contenedor.innerHTML = (p.items || []).map(i => `
+        <div class="flex justify-between">
+          <span>${i.cant}x ${i.nombre}</span>
+          <span>$${(i.precio * i.cant).toLocaleString('es-CL')}</span>
+        </div>
+      `).join('');
+
+      toggleBoletaModal();
+    }
+
+    function toggleBoletaModal() { document.getElementById('modal-boleta').classList.toggle('hidden'); }
+
+    function exportarProductosCSV() {
+      let csv = 'SKU,Nombre,Categoria,CostoNeto,CostoBruto,PrecioNeto,PrecioBruto,Stock,Unidad\n';
+      productos.forEach(p => {
+        csv += `"${p.sku || ''}","${p.nombre}",${p.categoria},${p.costo_neto || 0},${p.costo_bruto || p.costo},${p.precio_neto || 0},${p.precio},${p.stock},${p.unidad}\n`;
+      });
+      descargarArchivoCSV(csv, 'inventario_donde_la_coco_fiscal.csv');
+    }
+
+    function exportarPedidosCSV() {
+      let csv = 'Codigo,Fecha,Cliente,Email,Telefono,Direccion,ModoEntrega,Total,Estado\n';
+      pedidos.forEach(p => {
+        csv += `"${p.codigo_pedido}",${new Date(p.fecha).toLocaleDateString()},"${p.cliente_nombre}","${p.cliente_email}","${p.cliente_telefono}","${p.direccion}","${p.modo_entrega}",${p.total},"${p.estado}"\n`;
+      });
+      descargarArchivoCSV(csv, 'ventas_donde_la_coco.csv');
+    }
+
+    function descargarArchivoCSV(contenido, nombreArchivo) {
+      const blob = new Blob([contenido], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute('download', nombreArchivo);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function verDetallePedido(pedido) {
+      document.getElementById('det-codigo').innerText = pedido.codigo_pedido || ('DLC-' + pedido.id);
+      document.getElementById('det-cliente').innerText = `Cliente: ${pedido.cliente_nombre} | Entrega: ${pedido.modo_entrega || 'Despacho'}`;
+      document.getElementById('det-total').innerText = '$' + pedido.total.toLocaleString('es-CL') + ' CLP';
+
+      const contenedor = document.getElementById('det-items-list');
+      contenedor.innerHTML = (pedido.items || []).map(item => `
+        <div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-xl border border-gray-100 text-xs">
+          <div class="flex items-center gap-2.5">
+            ${item.img && (item.img.startsWith('/store/uploads/') || item.img.startsWith('http')) ? `<img src="${item.img}" class="w-8 h-8 object-cover rounded-lg border">` : `<span class="text-xl">${item.img || '📦'}</span>`}
+            <div>
+              <p class="font-bold text-gray-800">${item.nombre}</p>
+              <p class="text-[10px] text-gray-400">SKU: ${item.sku || 'N/A'} | $${item.precio.toLocaleString('es-CL')} x ${item.cant}</p>
+            </div>
+          </div>
+          <span class="font-extrabold text-emerald-600">$${(item.precio * item.cant).toLocaleString('es-CL')}</span>
+        </div>
+      `).join('');
+
+      toggleDetallePedidoModal();
+    }
+
+    function toggleDetallePedidoModal() { document.getElementById('modal-detalle-pedido').classList.toggle('hidden'); }
+
+    function seleccionarModoCheckout(modo) {
+      modoCheckout = modo;
+      const btnInv = document.getElementById('btn-mode-invitado');
+      const btnReg = document.getElementById('btn-mode-registrado');
+      const boxCuenta = document.getElementById('box-checkout-crear-cuenta');
+
+      if (modo === 'invitado') {
+        btnInv.className = 'flex-1 py-2 rounded-lg bg-white text-emerald-600 shadow-sm font-bold';
+        btnReg.className = 'flex-1 py-2 rounded-lg text-gray-500 hover:text-gray-700 font-bold';
+        boxCuenta.classList.add('hidden');
+      } else {
+        btnReg.className = 'flex-1 py-2 rounded-lg bg-white text-emerald-600 shadow-sm font-bold';
+        btnInv.className = 'flex-1 py-2 rounded-lg text-gray-500 hover:text-gray-700 font-bold';
+        boxCuenta.classList.remove('hidden');
+      }
+    }
+
+    async function verificarElegibilidadContraEntrega() {
+      if (!clienteActual || !clienteActual.id) {
+        esElegibleContraEntrega = false;
+        actualizarUIContraEntrega();
+        return;
+      }
+
+      try {
+        const res = await fetch(`/store/clientes/${clienteActual.id}/elegible-contra-entrega`);
+        if (res.ok) {
+          const data = await res.json();
+          esElegibleContraEntrega = data.elegible;
+        } else {
+          esElegibleContraEntrega = false;
+        }
+      } catch (err) {
+        esElegibleContraEntrega = false;
+      }
+      actualizarUIContraEntrega();
+    }
+
+    function actualizarUIContraEntrega() {
+      const radio = document.getElementById('radioContraEntrega');
+      const badge = document.getElementById('badgeContraEntrega');
+      const label = document.getElementById('lblContraEntrega');
+
+      if (clienteActual && esElegibleContraEntrega) {
+        if (radio) radio.disabled = false;
+        if (label) label.classList.remove('opacity-60');
+        if (badge) {
+          badge.className = "text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold";
+          badge.innerText = "✅ Habilitado";
+        }
+      } else {
+        if (radio) {
+          radio.disabled = true;
+          radio.checked = false;
+        }
+        if (label) label.classList.add('opacity-60');
+        if (badge) {
+          badge.className = "text-[10px] bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full font-bold";
+          badge.innerText = "🔒 Requiere 1 compra previa";
+        }
+        seleccionarMedioPagoModal('Transferencia Bancaria');
+      }
+    }
+
+    function seleccionarMedioPagoModal(metodo) {
+      const lblT = document.getElementById('lblTransferencia');
+      const lblC = document.getElementById('lblContraEntrega');
+
+      if (metodo === 'Transferencia Bancaria') {
+        if (lblT) lblT.className = "flex items-center justify-between p-3 border-2 border-emerald-600 bg-emerald-50 rounded-xl cursor-pointer transition";
+        if (lblC && !document.getElementById('radioContraEntrega')?.disabled) {
+          lblC.className = "flex items-center justify-between p-3 border border-slate-200 bg-white rounded-xl cursor-pointer transition";
+        }
+      } else {
+        if (lblC) lblC.className = "flex items-center justify-between p-3 border-2 border-emerald-600 bg-emerald-50 rounded-xl cursor-pointer transition";
+        if (lblT) lblT.className = "flex items-center justify-between p-3 border border-slate-200 bg-white rounded-xl cursor-pointer transition";
+      }
+    }
+
+    function abrirCheckoutModal() {
+      if (carrito.length === 0) return alert('El carrito está vacío.');
+      const totalMonto = carrito.reduce((acc, i) => acc + (i.precio * i.cant), 0);
+      document.getElementById('text-checkout-total').innerText = '$' + totalMonto.toLocaleString('es-CL') + ' CLP';
+
+      if (clienteActual) {
+        document.getElementById('check-nombre').value = clienteActual.nombre;
+        document.getElementById('check-email').value = clienteActual.email;
+        document.getElementById('check-direccion').value = clienteActual.direccion || '';
+        document.getElementById('check-telefono').value = clienteActual.telefono || '';
+      }
+
+      verificarElegibilidadContraEntrega();
+      toggleCarrito();
+      toggleCheckoutModal();
+    }
+
+    function toggleCheckoutModal() { document.getElementById('modal-checkout-cliente').classList.toggle('hidden'); }
+
+    async function confirmarPedidoCliente(e) {
+      e.preventDefault();
+      const totalMonto = carrito.reduce((acc, i) => acc + (i.precio * i.cant), 0);
+      let clienteId = clienteActual ? clienteActual.id : null;
+      const emailCliente = document.getElementById('check-email').value;
+      const medioPago = document.querySelector('input[name="medioPagoModal"]:checked')?.value || 'Transferencia Bancaria';
+
+      const btnPagar = document.querySelector('#modal-checkout-cliente button[type="submit"]');
+      const textoOriginalBtn = btnPagar ? btnPagar.innerHTML : 'Confirmar';
+
+      if (btnPagar) {
+        btnPagar.disabled = true;
+        btnPagar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando pedido...';
+      }
+
+      if (modoCheckout === 'registrado' && !clienteActual) {
+        const password = document.getElementById('check-password').value;
+        const nombre = document.getElementById('check-nombre').value;
+        const telefono = document.getElementById('check-telefono').value;
+        const direccion = document.getElementById('check-direccion').value;
+
+        if (!emailCliente || !password) {
+          if (btnPagar) {
+            btnPagar.disabled = false;
+            btnPagar.innerHTML = textoOriginalBtn;
+          }
+          return alert('Ingresa correo y contraseña para crear tu cuenta.');
+        }
+
+        try {
+          const regRes = await fetch('/store/clientes/registro', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre, email: emailCliente, password, telefono, direccion })
+          });
+          if (regRes.ok) {
+            const nuevoCliente = await regRes.json();
+            clienteActual = nuevoCliente;
+            clienteId = nuevoCliente.id;
+            actualizarUICliente();
+          } else {
+            const errData = await regRes.json();
+            if (btnPagar) {
+              btnPagar.disabled = false;
+              btnPagar.innerHTML = textoOriginalBtn;
+            }
+            return alert(errData.error || 'Error al crear la cuenta.');
+          }
+        } catch (err) {
+          if (btnPagar) {
+            btnPagar.disabled = false;
+            btnPagar.innerHTML = textoOriginalBtn;
+          }
+          return alert('Error al procesar el registro.');
+        }
+      }
+
+      const pedidoData = {
+        cliente_id: clienteId,
+        cliente_nombre: document.getElementById('check-nombre').value,
+        cliente_email: emailCliente,
+        direccion: document.getElementById('check-direccion').value || 'Retiro en Tienda',
+        cliente_telefono: document.getElementById('check-telefono').value,
+        total: totalMonto,
+        items: carrito,
+        medio_pago: medioPago,
+        tipo_compra: modoCheckout === 'registrado' || clienteActual ? 'Registrado' : 'Invitado',
+        modo_entrega: modoEntregaSeleccionado
+      };
+
+      try {
+        const res = await fetch('/store/pedidos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(pedidoData)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          if (medioPago === 'Transferencia Bancaria') {
+            const msg = `🎉 ¡Pedido ${data.codigo_pedido} registrado con éxito!\n\n` +
+              `Por favor realiza tu transferencia a:\n` +
+              `🏦 Banco Estado (Cuenta Vista)\n` +
+              `N° Cuenta: 771150551\n` +
+              `RUT: 77.115.055-1\n` +
+              `Titular: Comercializadora Catv SpA\n` +
+              `Email: c.torres.chamorro@gmail.com\n\n` +
+              `Haz clic en Aceptar para notificar tu pedido por WhatsApp a la tienda.`;
+
+            alert(msg);
+
+            const textWa = encodeURIComponent(`Hola DONDE LA COCO 🥥, acabo de hacer el pedido ${data.codigo_pedido} por $${totalMonto.toLocaleString('es-CL')} CLP vía Transferencia Bancaria. Adjuntaré mi comprobante.`);
+            window.open(`https://wa.me/56934513071?text=${textWa}`, '_blank');
+
+          } else {
+            alert(`🎉 ¡Pedido ${data.codigo_pedido} confirmado!\n\nPagas al momento de recibir tu pedido.`);
+            const textWa = encodeURIComponent(`Hola DONDE LA COCO 🥥, acabo de hacer el pedido ${data.codigo_pedido} por $${totalMonto.toLocaleString('es-CL')} CLP con Pago Contra Entrega.`);
+            window.open(`https://wa.me/56934513071?text=${textWa}`, '_blank');
+          }
+
+          carrito = [];
+          actualizarCarritoUI();
+          toggleCheckoutModal();
+        } else {
+          alert(data.error || 'Error al procesar el pedido.');
+        }
+
+        if (btnPagar) {
+          btnPagar.disabled = false;
+          btnPagar.innerHTML = textoOriginalBtn;
+        }
+      } catch (err) {
+        alert('Error de conexión al procesar la compra.');
+        if (btnPagar) {
+          btnPagar.disabled = false;
+          btnPagar.innerHTML = textoOriginalBtn;
+        }
+      }
+    }
+
+    function toggleAuthModal() { document.getElementById('modal-auth-cliente').classList.toggle('hidden'); }
+
+    async function procesarLoginCliente(e) {
+      e.preventDefault();
+      try {
+        const res = await fetch('/store/clientes/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: document.getElementById('auth-email').value,
+            password: document.getElementById('auth-password').value
+          })
+        });
+        if (res.ok) {
+          clienteActual = await res.json();
+          actualizarUICliente();
+          await cargarCarritoPersistente();
+          toggleAuthModal();
+          mostrarVista('portal-cliente');
+          alert(`¡Bienvenida nuevamente a DONDE LA COCO, ${clienteActual.nombre}!`);
+        } else { alert('Correo o contraseña incorrectos.'); }
+      } catch (err) { alert('Error al iniciar sesión.'); }
+    }
+
+    function actualizarUICliente() {
+      if (clienteActual) {
+        document.getElementById('btn-login-cliente').classList.add('hidden');
+        document.getElementById('box-user-session').classList.remove('hidden');
+        document.getElementById('text-user-name').innerText = clienteActual.nombre;
+      } else {
+        document.getElementById('btn-login-cliente').classList.remove('hidden');
+        document.getElementById('box-user-session').classList.add('hidden');
+      }
+    }
+
+    function cerrarSesionCliente() {
+      clienteActual = null;
+      carrito = [];
+      actualizarCarritoUI();
+      actualizarUICliente();
+      mostrarVista('tienda');
+    }
+
+    async function cambiarEstadoPedido(id, nuevoEstado) {
+      try {
+        const res = await fetch(`/store/pedidos/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ estado: nuevoEstado })
+        });
+        if (res.ok) await cargarPedidosDesdeBackend();
+      } catch (err) { alert('Error al cambiar estado.'); }
+    }
+
+    function cambiarSubTabAdmin(tab) {
+      document.getElementById('subtab-inventario').classList.toggle('hidden', tab !== 'inventario');
+      document.getElementById('subtab-pedidos').classList.toggle('hidden', tab !== 'pedidos');
+      document.getElementById('subtab-clientes').classList.toggle('hidden', tab !== 'clientes');
+
+      const btnInv = document.getElementById('tab-inventario');
+      const btnPed = document.getElementById('tab-pedidos');
+      const btnCli = document.getElementById('tab-clientes');
+
+      const activeStyle = 'pb-3 px-4 font-bold text-sm border-b-2 border-emerald-500 text-emerald-600 flex items-center gap-2 whitespace-nowrap';
+      const inactiveStyle = 'pb-3 px-4 font-bold text-sm text-gray-400 hover:text-gray-600 flex items-center gap-2 whitespace-nowrap relative';
+
+      btnInv.className = tab === 'inventario' ? activeStyle : inactiveStyle;
+      btnPed.className = tab === 'pedidos' ? activeStyle : inactiveStyle;
+      btnCli.className = tab === 'clientes' ? activeStyle : inactiveStyle;
+
+      if (tab === 'pedidos') cargarPedidosDesdeBackend();
+      if (tab === 'clientes') cargarClientesDesdeBackend();
+    }
+
+    async function eliminarProducto(id) {
+      if (confirm('¿Estás segura de eliminar este producto?')) {
+        try {
+          const res = await fetch(`/store/productos/${id}`, { method: 'DELETE' });
+          if (res.ok) {
+            await cargarCategoriasDesdeBackend();
+            await cargarProductosDesdeBackend();
+          }
+        } catch (err) { alert('Error al eliminar'); }
+      }
+    }
+
+    function intentarAccesoAdmin() {
+      if (adminAutenticado) mostrarVista(vistaActual === 'admin' ? 'tienda' : 'admin');
+      else toggleLoginModal();
+    }
+
+    function toggleLoginModal() { document.getElementById('modal-login-admin').classList.toggle('hidden'); }
+
+    function procesarLoginAdmin(e) {
+      e.preventDefault();
+      if (document.getElementById('login-usuario').value === 'admin' && document.getElementById('login-pass').value === 'maryta2018') {
+        adminAutenticado = true;
+        toggleLoginModal();
+        document.getElementById('icon-admin-lock').className = 'fa-solid fa-unlock text-emerald-500';
+        mostrarVista('admin');
+      } else { alert('Credenciales incorrectas.'); }
+    }
+
+    function cerrarSesionAdmin() {
+      adminAutenticado = false;
+      document.getElementById('icon-admin-lock').className = 'fa-solid fa-lock text-emerald-500';
+      mostrarVista('tienda');
+    }
+
+    function mostrarVista(vista) {
+      vistaActual = vista;
+      document.getElementById('vista-tienda').classList.toggle('hidden', vista !== 'tienda');
+      document.getElementById('vista-portal-cliente').classList.toggle('hidden', vista !== 'portal-cliente');
+      document.getElementById('vista-admin').classList.toggle('hidden', vista !== 'admin');
+      
+      document.getElementById('wrapper-buscador').classList.toggle('hidden', vista !== 'tienda');
+      document.getElementById('barra-categorias').classList.toggle('hidden', vista !== 'tienda');
+      
+      document.getElementById('text-toggle-view').innerText = vista === 'admin' ? 'Ir a la Tienda' : 'Panel Admin';
+
+      if (vista === 'admin') {
+        cargarPedidosDesdeBackend();
+        cargarClientesDesdeBackend();
+        renderTablaAdmin();
+      } else if (vista === 'portal-cliente') {
+        cargarDatosEnPortalPrivado();
+      } else {
+        renderProductos(productos);
+      }
+    }
+
+    function agregarAlCarrito(id) {
+      const prod = productos.find(p => p.id === id);
+      if (prod.stock <= 0) return alert('Producto agotado.');
+      const existe = carrito.find(item => item.id === id);
+      if (existe) {
+        if (existe.cant >= prod.stock) return alert('Límite de stock alcanzado.');
+        existe.cant++;
+      } else { carrito.push({ ...prod, cant: 1 }); }
+      
+      actualizarCarritoUI();
+      guardarCarritoPersistente();
+    }
+
+    function actualizarCarritoUI() {
+      const totalCant = carrito.reduce((acc, i) => acc + i.cant, 0);
+      const totalMonto = carrito.reduce((acc, i) => acc + (i.precio * i.cant), 0);
+      document.getElementById('badge-carrito').innerText = totalCant;
+      document.getElementById('total-navbar').innerText = '$' + totalMonto.toLocaleString('es-CL');
+      document.getElementById('total-modal').innerText = '$' + totalMonto.toLocaleString('es-CL') + ' CLP';
+      const contenedor = document.getElementById('items-carrito');
+      if (carrito.length === 0) contenedor.innerHTML = '<p class="text-center text-gray-400 py-10 text-sm">Tu carrito está vacío</p>';
+      else {
+        contenedor.innerHTML = carrito.map(item => `
+          <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-100">
+            <div class="flex items-center gap-3">
+              ${item.img && (item.img.startsWith('/store/uploads/') || item.img.startsWith('http')) ? `<img src="${item.img}" class="w-8 h-8 object-cover rounded-lg border">` : `<span class="text-2xl">${item.img || '📦'}</span>`}
+              <div>
+                <h4 class="font-bold text-xs text-gray-800">${item.nombre}</h4>
+                <p class="text-[10px] text-gray-400">SKU: ${item.sku || 'N/A'} | $${item.precio.toLocaleString('es-CL')} x ${item.cant}</p>
+              </div>
+            </div>
+            <span class="font-bold text-sm text-emerald-600">$${(item.precio * item.cant).toLocaleString('es-CL')}</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    function toggleCarrito() { document.getElementById('modal-carrito').classList.toggle('hidden'); }
+    function filtrarCategoria(cat) { renderProductos(cat === 'todas' ? productos : productos.filter(p => p.categoria === cat)); }
+    function buscarProducto() {
+      const q = document.getElementById('input-busqueda').value.toLowerCase();
+      renderProductos(productos.filter(p => p.nombre.toLowerCase().includes(q) || (p.sku && p.sku.toLowerCase().includes(q))));
+    }
+
+    cargarCategoriasDesdeBackend();
+    cargarProductosDesdeBackend();
+  </script>
+</body>
+</html>

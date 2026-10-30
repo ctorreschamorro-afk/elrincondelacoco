@@ -1,0 +1,101 @@
+services:
+  # Base de datos PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: supermarket_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: supermercado
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - supermarket_net
+
+  # Caché Redis
+  redis:
+    image: redis:7-alpine
+    container_name: supermarket_redis
+    restart: always
+    ports:
+      - "6380:6379"
+    networks:
+      - supermarket_net
+
+  # Almacenamiento compatible S3
+  minio:
+    image: adobe/s3mock:latest
+    container_name: supermarket_minio
+    restart: always
+    ports:
+      - "9000:9090"
+      - "9001:9091"
+    environment:
+      initialBuckets: supermarket-assets
+    volumes:
+      - minio_data:/data
+    networks:
+      - supermarket_net
+
+  # Backend Node.js
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: supermarket_backend
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/app/backend
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/supermercado
+      - JWT_SECRET=supersecret
+      - COOKIE_SECRET=supersecret
+      - FILE_PROVIDER=local
+      - MEDUSA_FILE_PROVIDER=local
+    depends_on:
+      - postgres
+      - redis
+      - minio
+    networks:
+      - supermarket_net
+
+  # Frontend Web
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: supermarket_frontend
+    restart: always
+    networks:
+      - supermarket_net
+
+  # Proxy NGINX
+  nginx:
+    image: nginx:alpine
+    container_name: supermarket_nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - supermarket_net
+
+networks:
+  supermarket_net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  minio_data:
