@@ -1,0 +1,24 @@
+# Dependencias
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+
+# Entorno y Secretos
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Builds
+dist/
+build/
+.next/
+out/
+
+# SO y Logs
+.DS_Store
+*.log

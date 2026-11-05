@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 export default function CheckoutPage() {
   const { items, getTotal, clearCart } = useCartStore();
   const [deliveryType, setDeliveryType] = useState<'delivery' | 'pickup'>('delivery');
-  const [paymentMethod, setPaymentMethod] = useState<'webpay' | 'transfer' | 'pickup_pay'>('webpay');
+  const [paymentMethod, setPaymentMethod] = useState<'transfer' | 'pickup_pay'>('transfer');
   const [commune, setCommune] = useState('Curicó');
   const [address, setAddress] = useState('');
   const [deliveryDate, setDeliveryDate] = useState('');
@@ -23,35 +23,8 @@ export default function CheckoutPage() {
       return;
     }
 
-    if (paymentMethod === 'webpay') {
-      const res = await fetch('/store/webpay', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: getTotal(),
-          buyOrder: `ORD-${Date.now()}`,
-          sessionId: `SESS-${Math.floor(Math.random() * 1000000)}`,
-          returnUrl: `${window.location.origin}/checkout/confirm`,
-        }),
-      });
-
-      const data = await res.json();
-      if (data.url && data.token) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = data.url;
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'token_ws';
-        input.value = data.token;
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
-      }
-    } else {
-      alert('Pedido registrado con éxito. Nos pondremos en contacto para la entrega.');
-      clearCart();
-    }
+    alert('Pedido registrado con éxito. Nos pondremos en contacto para la entrega.');
+    clearCart();
   };
 
   return (
@@ -150,7 +123,6 @@ export default function CheckoutPage() {
               onChange={(e) => setPaymentMethod(e.target.value as any)}
               className="w-full p-2 border rounded dark:bg-slate-800 border-gray-300 dark:border-slate-700"
             >
-              <option value="webpay">Webpay Plus (Débito/Crédito Transbank)</option>
               <option value="transfer">Transferencia Bancaria Directa</option>
               <option value="pickup_pay">Pago contra entrega / Retiro</option>
             </select>

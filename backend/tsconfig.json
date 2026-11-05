@@ -7,10 +7,9 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "rootDir": "./src",
-    "outDir": "./dist",
-    "ignoreDeprecations": "6.0"
+    "outDir": "./dist"
   },
   "include": ["src/**/*"]
 }

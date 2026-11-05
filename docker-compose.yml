@@ -1,7 +1,7 @@
 services:
   # Base de datos PostgreSQL
   postgres:
-    image: postgres:15-alpine
+    image: postgres:15
     container_name: supermarket_postgres
     restart: always
     environment:
@@ -20,12 +20,15 @@ services:
     image: redis:7-alpine
     container_name: supermarket_redis
     restart: always
+    command: redis-server --appendonly yes
     ports:
       - "6380:6379"
+    volumes:
+      - redis_data:/data
     networks:
       - supermarket_net
 
-  # Almacenamiento compatible S3
+  # Almacenamiento compatible S3 (MinIO por Bitnami)
   minio:
     image: adobe/s3mock:latest
     container_name: supermarket_minio
@@ -47,15 +50,13 @@ services:
       dockerfile: Dockerfile
     container_name: supermarket_backend
     restart: always
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./backend:/app/backend
+    command: sh -c "npx medusa build || true && npm run start"
     env_file:
       - .env
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/supermercado
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/supermercado?sslmode=disable
+      - REDIS_URL=redis://redis:6379
       - JWT_SECRET=supersecret
       - COOKIE_SECRET=supersecret
       - FILE_PROVIDER=local
@@ -74,6 +75,12 @@ services:
       dockerfile: Dockerfile
     container_name: supermarket_frontend
     restart: always
+    ports:
+      - "3000:80"
+    environment:
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    command: npm run start
     networks:
       - supermarket_net
 
@@ -83,7 +90,7 @@ services:
     container_name: supermarket_nginx
     restart: always
     ports:
-      - "80:80"
+      - "80:80"       # <--- NGINX se queda exclusivamente con el puerto 80
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
@@ -99,3 +106,4 @@ networks:
 volumes:
   postgres_data:
   minio_data:
+  redis_data:
