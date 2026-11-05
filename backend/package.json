@@ -14,5 +14,8 @@
     "@medusajs/framework": "^2.0.0",
     "@medusajs/medusa": "^2.0.0",
     "@medusajs/utils": "^2.0.0"
+    "typescript": "^5.0.0",
+    "@medusajs/admin-bundler": "latest"
   }
 }
+

@@ -3,9 +3,9 @@ const { defineConfig } = require("@medusajs/utils")
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
-    // Agregamos opciones adicionales para PostgreSQL para evitar rechazos de conexión local
+    // Habilitamos SSL requerido por Supabase en la nube
     databaseExtra: {
-      ssl: false
+      ssl: { rejectUnauthorized: false }
     },
     redisUrl: process.env.REDIS_URL,
     http: {
@@ -19,15 +19,11 @@ module.exports = defineConfig({
   modules: [
     {
       resolve: "@medusajs/medusa/cache-redis",
-      options: {
-        redisUrl: process.env.REDIS_URL,
-      },
+      options: { redisUrl: process.env.REDIS_URL },
     },
     {
       resolve: "@medusajs/medusa/event-bus-redis",
-      options: {
-        redisUrl: process.env.REDIS_URL,
-      },
+      options: { redisUrl: process.env.REDIS_URL },
     },
   ],
 })
